@@ -105,26 +105,60 @@ class GOBN(object):
 	"""
 
 
-	def __init__(self, GOBN_DIR=None, SCIP_DIR=None, SET_DIR=None):
+	def __init__(self, GOBN_DIR=None, SCIP_DIR=None, SETTINGS_FILE=None):
+		"""
+		NOTE: 
+			By not passing any values to the above directory arguments,
+			this is basically assuming that this "pyGOBN.py" file is
+			being run from a main directory, and both the GOBNILP and SCIP
+			main directories are located ONE directory below this file. Also,
+			note that by not passing any directory values, it is assumed that
+			the user holds ONLY the tar.gz files, which must be un-tarred and
+			then we must try to make them.
+
+			If values are passed to the above directory arguments, it can
+			be any valid absolute or relative path, but it is assumed that
+			the user has already downloaded/installed/run make on the
+			GOBNILP and/or SCIP source code.
+
+
+		"""
 		
 		if GOBN_DIR is None:
-			self.GOBN_DIR = 'gobnilp1.6.1'
-			self.GOBN_TARRED = False
+			self.GOBN = {
+				'DIR': 'gobnilp/gobnilp-1.6.1', # main GOBNILP directory
+				'TAR_FILE' : 'gobnilp/gobnilp1.6.1.tar.gz',
+				'TARRED' : False,
+				'MADE' : False
+			}
 		else:
-			self.GOBN_DIR = GOBN_DIR
-			self.GOBN_TARRED = True
+			self.GOBN = {
+				'DIR': GOBN_DIR # main GOBNILP directory
+				'TAR_FILE' : 'gobnilp/gobnilp1.6.1.tar.gz',
+				'TARRED' : True,
+				'MADE' : True
+			}
 
 		if SCIP_DIR is None:
-			self.SCIP_DIR = 'scipoptsuite-3.1.1/scip-3.1.1'
-			self.SCIP_TARRED = False
+			self.SCIP = {
+				'DIR' : 'scip/scipoptsuite-3.1.1', # main SCIP directory
+				'TAR_FILE' : 'scip/scioptsuite-3.1.1.tgz',
+				'TARRED' : False,
+				'MADE' : False
+			}
 		else:
-			self.SCIP_DIR = SCIP_DIR
-			self.SCIP_TARRED = True
+			self.SCIP = {
+				'DIR' = SCIP_DIR, # main SCIP directory
+				'TAR_FILE' : 'scip/scipoptsuite-3.1.1.tgz',
+				'TARRED' : True,
+				'MADE' : True
 
-		if SET_DIR is None:
-			self.SET_DIR = 'mysettings.txt'
+			}
+
+		if SETTINGS_FILE is None:
+			self.SETTINGS_FILE = 'gobnilp/mysettings.txt'
 		else:
-			self.SET_DIR = SET_DIR
+			self.SETTINGS_FILE = SETTINGS_FILE
 
 	### EXTRACT & MAKE METHODS ###
 	
@@ -136,7 +170,8 @@ class GOBN(object):
 		proc = subprocess.call(['tar', '-xzvf', 'scipoptsuite-3.1.1.tar.gz', '-C', SCIP_DIR])
 
 	def make(self):
-		subprocess.call()
+		self.make_SCIP()
+		self.make_GOBNILP()
 
 	def make_GOBNILP(self, CPLEX=False):
 		"""
@@ -158,11 +193,25 @@ class GOBN(object):
 				print 'Un-Tar unsuccessful'
 				return None
 
+		print 'Linking SCIP to GOBNILP..'
 		config_proc = subprocess.call(['./configure.sh', SCIP_DIR])
+		if config_proc.returncode == 0:
+			print 'SCIP Linking was successful.'
+		else:
+			print 'SCIP Linking was unsuccessful.'
+			return None
+
+		print 'Making GOBNILP..'
 		if CPLEX:
 			make_proc = subprocess.call(['make', 'LPS=cpx', '-C', GOBN_DIR])
 		else:
 			make_proc = subprocess.call(['make', '-C', GOBN_DIR])
+
+		if make_proc.returncode == 0:
+			print 'GOBNILP Make was successful.'
+			self.GOBN_MADE = True
+		else:
+			print 'GOBNILP Make was unsuccessful.'
 
 	def make_SCIP(self):
 		"""
@@ -180,6 +229,7 @@ class GOBN(object):
 				print 'Un-Tar unsuccessful'
 				return None		
 
+		print 'Making SCIP..'
 		make_proc = subprocess.call(['make', '-C', SKIP_DIR])
 
 	### GOBNILP SETTINGS ###
