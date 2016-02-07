@@ -128,29 +128,31 @@ class GOBN(object):
 			self.GOBN = {
 				'DIR': 'gobnilp/gobnilp1.6.1', # main GOBNILP directory
 				'TAR_FILE' : 'gobnilp/gobnilp1.6.1.tar.gz',
-				'TARRED' : False,
+				'UNPACKED' : False,
 				'MADE' : False
 			}
 		else:
 			self.GOBN = {
 				'DIR': GOBN_DIR, # main GOBNILP directory
 				'TAR_FILE' : 'gobnilp/gobnilp1.6.1.tar.gz',
-				'TARRED' : True,
+				'UNPACKED' : True,
 				'MADE' : True
 			}
 
 		if SCIP_DIR is None:
 			self.SCIP = {
 				'DIR' : 'scip/scipoptsuite-3.1.1', # main SCIP directory
+				'SCIP_DIR' : 'scip/scipoptsuite-3.1.1/scip-3.1.1',
 				'TAR_FILE' : 'scip/scipoptsuite-3.1.1.tgz',
-				'TARRED' : False,
+				'UNPACKED' : False,
 				'MADE' : False
 			}
 		else:
 			self.SCIP = {
 				'DIR' : SCIP_DIR, # main SCIP directory
+				'SCIP_DIR' : 'scip/scipoptsuite-3.1.1/scip-3.1.1',
 				'TAR_FILE' : 'scip/scipoptsuite-3.1.1.tgz',
-				'TARRED' : True,
+				'UNPACKED' : True,
 				'MADE' : True
 
 			}
@@ -160,36 +162,70 @@ class GOBN(object):
 		else:
 			self.SETTINGS_FILE = SETTINGS_FILE
 
-	### EXTRACT & MAKE METHODS ###
-	
-	def extract_gobn(self):
+	### UNPACK TAR FILES ###
+
+	def unpack(self):
+		"""
+		Unpack SCIP and GOBNILP from one command.
+		See the docs of the associated functions.
+
+		This has been validated on my machine.
+		"""
+		self.unpack_GOBN()
+		self.unpack_SCIP()
+
+	def unpack_GOBN(self):
 		"""
 		Unpack the GOBNILP tar file, which should exist at SELF.GOBN['TAR_FILE']
+
+		Because GOBNILP unpacks into the existing directory,
+		a new directory will be created into which GOBNILP can
+		be unpacked.
+
+		This has been validated on my machine.
 		"""
 		dir_proc = subprocess.call(['mkdir', self.GOBN['DIR']])
 		unpack_proc = subprocess.call(['tar', '-xzvf', self.GOBN['TAR_FILE'], '-C', self.GOBN['DIR']])
 
-	def extract_scip(self):
+	def unpack_SCIP(self):
 		"""
-		Unpack the SCIP tar file, which should exist in SELF.SCIP['TAR_FILE']
-		"""
-		dir_proc = subprocess.call(['mkdir', self.SCIP['DIR']])
-		unpack_proc = subprocess.call(['tar', '-xzvf', self.SCIP['TAR_FILE'], '-C', 'scip'])
-		
+		Unpack the SCIP tar file. 
 
-	def clean_up(self):
+		This differs a little from unpacking GOBNILP, because
+		this tar file unpacks into its own directory - whereas
+		GOBNILP unpacks into the existing directory and thus a
+		directory must be MADE for it. That is not the case here.
+
+		This has been validated on my machine.
 		"""
-		Remove the unpacked tar files.
-		"""
-		gobn_proc = subprocess.call(['rm', '-r', self.GOBN['DIR']])
-		scip_proc = subprocess.call(['rm', '-r', self.SCIP['DIR']])
+		unpack_proc = subprocess.call(['tar', '-xzvf', self.SCIP['TAR_FILE'], '-C', 'scip'])		
 		
-		
+	### MAKE SOURCE CODE ###
 
 	def make(self, CPLEX=False):
 		self.make_SCIP()
 		self.make_GOBNILP(CPLEX)
 
+	def make_SCIP(self, test=False):
+		"""
+		Steps:
+			1. Unpack SCIP if necessary
+			2. make
+		"""	
+
+		print 'Making SCIP.. This may take a few minutes.'
+		make_proc = subprocess.call(['make', '-C', self.SCIP['DIR']])
+
+		if make_proc == 0:
+			print 'SCIP Make was successful.'
+			self.SCIP['MADE'] = True
+		else:
+			print 'SCIP Make was unsuccessful'
+			self.SCIP['MADE'] = False
+
+		if test:
+			test_out = subprocess.check_output(['make', 'test', '-C', self.SCIP['DIR']])
+	
 	def make_GOBNILP(self, CPLEX=False):
 		"""
 		Make the GOBNILP source code.
@@ -200,54 +236,55 @@ class GOBN(object):
 			2. ./configure.sh SCIP_DIR
 			3. make (LPS=cpx)
 		"""
-		if not self.GOBN_TARRED:
-			print 'GOBN must be unpacked.. Trying now'
-			tar_code = self.extract_gobn_tar()
-			if tar_code == 0:
-				print 'Unpacked successful'
-				self.GOBN_TARRED = True
-			else:
-				print 'Unpacked unsuccessful'
-				return None
-
-		print 'Linking SCIP to GOBNILP..'
-		config_proc = subprocess.call(['./configure.sh', SCIP_DIR])
-		if config_proc.returncode == 0:
-			print 'SCIP Linking was successful.'
-		else:
-			print 'SCIP Linking was unsuccessful.'
+		### CHECK THAT SCIP HAS BEEN MADE FIRST ###
+		if not self.SCIP['MADE']:
+			print 'SCIP must be MADE first..'
 			return None
 
-		print 'Making GOBNILP..'
-		if CPLEX:
-			make_proc = subprocess.call(['make', 'LPS=cpx', '-C', GOBN_DIR])
+		### LINK SCIP TO GOBNILP ###
+		print 'Linking SCIP to GOBNILP..'
+		subprocess.call ()
+		scip_dir = os.path.join('../../', self.SCIP['SCIP_DIR'])
+
+		subprocess.call(['./configure.sh', scip_dir])
+		#config_out = subprocess.call(['./configure.sh', self.SCIP['SCIP_DIR']])
+
+		#gobnilp/gobnilp1.6.1/configure.sh scip/scipoptsuite-3.1.1/scip-3.1.1
+
+		if 'SUCCEEDED' in config_out:
+			print 'SCIP Linking was successful.'
+		elif 'exists' in config_out:
+			print 'SCIP already Linked to GOBNILP.. Moving on.'
 		else:
-			make_proc = subprocess.call(['make', '-C', GOBN_DIR])
+			print 'SCIP Linking was unsuccessful.. Exiting.'
+			return None
 
-		if make_proc.returncode == 0:
-			print 'GOBNILP Make was successful.'
-			self.GOBN_MADE = True
-		else:
-			print 'GOBNILP Make was unsuccessful.'
+		### MAKE GOBNILP ###
 
-	def make_SCIP(self):
+		#print 'Making GOBNILP..'
+		#if CPLEX:
+		#	make_proc = subprocess.call(['make', 'LPS=cpx', '-C', GOBN_DIR])
+		#else:
+		#	make_proc = subprocess.call(['make', '-C', GOBN_DIR])
+		#
+		#if make_proc == 0:
+		#	print 'GOBNILP Make was successful.'
+		#	self.GOBN_MADE = True
+		#else:
+		#	print 'GOBNILP Make was unsuccessful.'
+
+	def clean(self):
 		"""
-		Steps:
-			1. Unpack SCIP if necessary
-			2. make
+		Remove the unpacked tar files.
 		"""
-		if not self.SCIP_TARRED:
-			print 'SCIP must be unpacked.. Trying now'
-			tar_code = self.extract_scip_tar()
-			if tar_code == 0:
-				print 'Unpacked successful'
-				self.SCIP_TARRED = True
-			else:
-				print 'Unpacked unsuccessful'
-				return None		
+		gobn_proc = subprocess.call(['rm', '-r', self.GOBN['DIR']])
+		scip_proc = subprocess.call(['rm', '-r', self.SCIP['DIR']])
 
-		print 'Making SCIP..'
-		make_proc = subprocess.call(['make', '-C', SKIP_DIR])
+
+	### TEST GOBNILP ###
+	def test_GOBN(self):
+		pass
+
 
 	### GOBNILP SETTINGS ###
 
