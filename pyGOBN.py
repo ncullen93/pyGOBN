@@ -31,7 +31,7 @@ import subprocess
 
 
 
-class GOBNILP(object):
+class GOBN(object):
 	"""
 	This class is a wrapper for almost anything you would want to
 	do in order to install, make, and run GOBNILP - except that
