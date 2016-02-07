@@ -74,8 +74,8 @@ make() will do everything for you.
 From my understanding, the only necessary requirement for setting up GOBNILP
 is a C++ compiler. This code was written for a Mac computer, which already has
 the 'make' command built-in. Since the code calls the 'tar' command to unpack
-the source code files, i'm assuming it's necessary to have the command as well. For
-that reason, it's quite likely that this code will only work on Mac OS and probably
+the source code files, i'm assuming it's necessary to have that command as well. 
+It's quite likely that this code will only work on Mac OS and probably
 Linux at the moment. I welcome any feedback from Windows users who want this to
 work on their machines.
 
