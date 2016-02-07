@@ -22,6 +22,33 @@ References
 [1] Tobias Achterberg, SCIP: solving constraint integer programs,
 Mathematical Programming Computation, v1, n1, pgs 1-41, 2009.
 
+[2] Mark Bartlett and James Cussens. Advances in Bayesian network learning
+using integer programming. In Proceedings of the 29th Conference on
+Uncertainty in Artificial Intelligence (UAI 2013). AUAI Press, 2013. To
+appear.
+
+[3] James Cussens. Bayesian network learning with cutting planes. In Fabio G.
+Cozman and Avi Pfeffer, editors, Proceedings of the 27th Conference on
+Uncertainty in Artificial Intelligence (UAI 2011), pages 153-160. 
+AUAI Press, 2011.
+
+[4] James Cussens, Mark Bartlett, Elinor M. Jones, and Nuala A. Sheehan.
+Maximum likelihood pedigree reconstruction using
+
+[5] Milan Studeny. How matroids occur in the context of learning Bayesian 
+network structure. Proceedings of the 31st Conference on Uncertainty 
+in Artificial Intelligence (UAI-15) July 2015.
+
+[6] James Cussens, David Haws and Milan Studeny. Polyhedral aspects of score 
+equivalence in Bayesian network structure learning. Arkiv 1503.00829, March 2015.
+
+[7] Tommi Jaakkola, David Sontag, Amir Globerson, and Marina Meila. Learning
+Bayesian network structure using LP relaxations. In Proceedings of the
+13th International Conference on Artificial Intelligence and Statistics (AISTATS
+2010), volume 9 of Journal of Machine Learning Research: Workshop
+and Conference Proceedings, pages 358-365. Society for Artificial Intelligence
+and Statistics, 2010.
+
 Acknowledgements from GOBNILP
 -----------------------------
 - GOBNILP version 1.2-1.6 and higher was supported by MRC Project Grant G1002312.
