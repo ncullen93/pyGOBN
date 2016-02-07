@@ -13,9 +13,13 @@ for the creation of GOBNILP, and to the creators of SCIP.
 
 <h2>Quick Usage</h2>
 To unpack/link/make the GOBNILP solver, simply run the following commands:
+
 	- change directories to be in 'pyGOBN-master' folder.
+
 	- 'from pyGOBN import *'
+
 	- 'g = GOBN()'
+
 	- 'g.make()'
 
 Any errors will be reported to you, but it has been extensively tested.
