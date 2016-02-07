@@ -113,7 +113,7 @@ class GOBN(object):
 			being run from a main directory, and both the GOBNILP and SCIP
 			main directories are located ONE directory below this file. Also,
 			note that by not passing any directory values, it is assumed that
-			the user holds ONLY the tar.gz files, which must be un-tarred and
+			the user holds ONLY the tar.gz files, which must be Unpackedred and
 			then we must try to make them.
 
 			If values are passed to the above directory arguments, it can
@@ -126,14 +126,14 @@ class GOBN(object):
 		
 		if GOBN_DIR is None:
 			self.GOBN = {
-				'DIR': 'gobnilp/gobnilp-1.6.1', # main GOBNILP directory
+				'DIR': 'gobnilp/gobnilp1.6.1', # main GOBNILP directory
 				'TAR_FILE' : 'gobnilp/gobnilp1.6.1.tar.gz',
 				'TARRED' : False,
 				'MADE' : False
 			}
 		else:
 			self.GOBN = {
-				'DIR': GOBN_DIR # main GOBNILP directory
+				'DIR': GOBN_DIR, # main GOBNILP directory
 				'TAR_FILE' : 'gobnilp/gobnilp1.6.1.tar.gz',
 				'TARRED' : True,
 				'MADE' : True
@@ -142,13 +142,13 @@ class GOBN(object):
 		if SCIP_DIR is None:
 			self.SCIP = {
 				'DIR' : 'scip/scipoptsuite-3.1.1', # main SCIP directory
-				'TAR_FILE' : 'scip/scioptsuite-3.1.1.tgz',
+				'TAR_FILE' : 'scip/scipoptsuite-3.1.1.tgz',
 				'TARRED' : False,
 				'MADE' : False
 			}
 		else:
 			self.SCIP = {
-				'DIR' = SCIP_DIR, # main SCIP directory
+				'DIR' : SCIP_DIR, # main SCIP directory
 				'TAR_FILE' : 'scip/scipoptsuite-3.1.1.tgz',
 				'TARRED' : True,
 				'MADE' : True
@@ -162,16 +162,33 @@ class GOBN(object):
 
 	### EXTRACT & MAKE METHODS ###
 	
-	def extract_gobn_tar(self):
-		proc = subprocess.call(['tar', '-xzvf', 'gobnilp1.6.1.tar.gz', '-C', GOBN_DIR])
-		return proc.returncode
+	def extract_gobn(self):
+		"""
+		Unpack the GOBNILP tar file, which should exist at SELF.GOBN['TAR_FILE']
+		"""
+		dir_proc = subprocess.call(['mkdir', self.GOBN['DIR']])
+		unpack_proc = subprocess.call(['tar', '-xzvf', self.GOBN['TAR_FILE'], '-C', self.GOBN['DIR']])
 
-	def extract_scip_tar(self):
-		proc = subprocess.call(['tar', '-xzvf', 'scipoptsuite-3.1.1.tar.gz', '-C', SCIP_DIR])
+	def extract_scip(self):
+		"""
+		Unpack the SCIP tar file, which should exist in SELF.SCIP['TAR_FILE']
+		"""
+		dir_proc = subprocess.call(['mkdir', self.SCIP['DIR']])
+		unpack_proc = subprocess.call(['tar', '-xzvf', self.SCIP['TAR_FILE'], '-C', 'scip'])
+		
 
-	def make(self):
+	def clean_up(self):
+		"""
+		Remove the unpacked tar files.
+		"""
+		gobn_proc = subprocess.call(['rm', '-r', self.GOBN['DIR']])
+		scip_proc = subprocess.call(['rm', '-r', self.SCIP['DIR']])
+		
+		
+
+	def make(self, CPLEX=False):
 		self.make_SCIP()
-		self.make_GOBNILP()
+		self.make_GOBNILP(CPLEX)
 
 	def make_GOBNILP(self, CPLEX=False):
 		"""
@@ -179,18 +196,18 @@ class GOBN(object):
 
 		IMPORTANT: You must make SCIP before GOBNILP.
 		Steps:
-			1. Untar GOBN if necessary
+			1. Unpack GOBN if necessary
 			2. ./configure.sh SCIP_DIR
 			3. make (LPS=cpx)
 		"""
 		if not self.GOBN_TARRED:
-			print 'GOBN must be untarred.. Trying now'
+			print 'GOBN must be unpacked.. Trying now'
 			tar_code = self.extract_gobn_tar()
 			if tar_code == 0:
-				print 'Un-Tar successful'
+				print 'Unpacked successful'
 				self.GOBN_TARRED = True
 			else:
-				print 'Un-Tar unsuccessful'
+				print 'Unpacked unsuccessful'
 				return None
 
 		print 'Linking SCIP to GOBNILP..'
@@ -216,17 +233,17 @@ class GOBN(object):
 	def make_SCIP(self):
 		"""
 		Steps:
-			1. Untar SCIP if necessary
+			1. Unpack SCIP if necessary
 			2. make
 		"""
 		if not self.SCIP_TARRED:
-			print 'SCIP must be untarred.. Trying now'
+			print 'SCIP must be unpacked.. Trying now'
 			tar_code = self.extract_scip_tar()
 			if tar_code == 0:
-				print 'Un-Tar successful'
+				print 'Unpacked successful'
 				self.SCIP_TARRED = True
 			else:
-				print 'Un-Tar unsuccessful'
+				print 'Unpacked unsuccessful'
 				return None		
 
 		print 'Making SCIP..'
