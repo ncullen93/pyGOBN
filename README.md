@@ -11,6 +11,15 @@ This work is not affiliated with GOBNILP or SCIP creators. Still, all credit for
 code behind all of this goes to Dr. James Cussens and Dr. Mark Bartlett 
 for the creation of GOBNILP, and to the creators of SCIP.
 
+<h2>Pre-Reqs</h2>
+From my understanding, the only necessary requirement for setting up GOBNILP
+is a C++ compiler. This code was written for a Mac computer, which already has
+the 'make' command built-in. Since the code calls the 'tar' command to unpack
+the source code files, i'm assuming it's necessary to have that command as well. 
+It's quite likely that this code will only work on Mac OS and probably
+Linux at the moment. I welcome any feedback from Windows users who want this to
+work on their machines.
+
 <h2>Quick Usage</h2>
 To unpack/link/make the GOBNILP solver, simply run the following commands:
 
@@ -69,15 +78,6 @@ and make() calls make_SCIP() and make_GOBN(). There is certainly a necessary ord
 in which those commands must be called, by pyGOBN resolves an issues by simply calling
 the necessary commands to run any command the user inputs. As described earlier, calling
 make() will do everything for you.
-
-<h2>Pre-Requirements</h2>
-From my understanding, the only necessary requirement for setting up GOBNILP
-is a C++ compiler. This code was written for a Mac computer, which already has
-the 'make' command built-in. Since the code calls the 'tar' command to unpack
-the source code files, i'm assuming it's necessary to have that command as well. 
-It's quite likely that this code will only work on Mac OS and probably
-Linux at the moment. I welcome any feedback from Windows users who want this to
-work on their machines.
 
 
 
