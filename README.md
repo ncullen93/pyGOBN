@@ -37,31 +37,38 @@ pyGOBN makes it incredibly easy to install GOBNILP and SCIP, because it includes
 zipped source code directory of both.
 
 You should see the following in $(MASTER_DIR):
+
 	- pyGOBN.py file : the main driver behind pyGOBN.
+
 	- /gobnilp/ folder : the folder currently containing 'gobnilp1.6.1.tar.gz' (the
 		zipped source code of GOBNILP).
+
 	- /scip/ folder : the folder currently containing 'scipoptsuite-3.1.1.tgz' (the
 		ziped source code of SCIP).
+
 	- __init__.py : not important here.
+
 	- README.md : not important here.
 
 We will refer to the '/gobnilp/' folder as $(GOBN_DIR) and '/scip/' as $(SCIP_DIR).
 
 In order to get running with GOBNILP, the following must happen:
+
 	- gobnilp and scipoptsuite tar files must be unpacked (unzipped).
+
 	- we must call 'make' on SCIP.
+
 	- we must call 'make' on gobnilp.
 
 Thankfully, pyGOBN does ALL of this for you.
 
 There are two main commands regarding the installing/making of GOBNILP, all wrapped
-in an object called 'GOBN()'. Simply put, here is how you can unpack and make the 
-necessary files from an ipython shell or python file:
-	- call 'g = GOBN()'
-	- call 'g.make()'
-
-That's it! Just wait and see what happens. Any errors will be clearly and concisely
-reported back to you.
+in an object called 'GOBN()' - unpack() and make(). Those two main commands both
+call the SCIP and GOBN versions - i.e. unpack() calls unpack_SCIP() and unpack_GOBN(),
+and make() calls make_SCIP() and make_GOBN(). There is certainly a necessary order
+in which those commands must be called, by pyGOBN resolves an issues by simply calling
+the necessary commands to run any command the user inputs. As described earlier, calling
+make() will do everything for you.
 
 <h2>Pre-Requirements</h2>
 From my understanding, the only necessary requirement for setting up GOBNILP
