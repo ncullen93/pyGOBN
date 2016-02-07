@@ -18,8 +18,7 @@ therefore this code may only be retrieved as such.
 
 References
 ----------
-Tobias Achterberg,
-SCIP: solving constraint integer programs,
+[1] Tobias Achterberg, SCIP: solving constraint integer programs,
 Mathematical Programming Computation, v1, n1, pgs 1-41, 2009.
 
 
@@ -47,13 +46,16 @@ class GOBN(object):
 			
 			1. "-g = filename"
 
-				Sets the file from which the parameters are read. For example,
+				Sets the file from which the settings are read. For example,
 				if a settings file is created, you would enter the following:
 					bin/globnilp -g=mysettings.txt data/asia_100.data
 
 			2. "-f = format"
 
-				Sets the input file format
+				Sets the input file format - note that you must use "-f=dat" flag
+				if data file ends in something other than .dat, otherwise it will
+				think its a local scores file. Any common delimiter can be used by
+				simply specifying as such in the settings file.
 
 			3. "-x"
 
@@ -176,10 +178,29 @@ class GOBN(object):
 			*minfounders* : min number of prior variables
 			*edge_penality* : positive value will bias the solver
 				toward sparser graphs.
+			*nbns* : an integer,
+				how many BNs to learn - e.g. if nbns = 10, the solver
+				will return the 10 unqiue BNs with the highest score.
 
 		(gobnilp/outputfile/) 
-			*solution* : a string,
+			*solution* : a string - file name
 				the file to which stdout will be written
+			*adjacencymatrix* : a string (ending in '.mat') - file name
+				the file to which the adjacency matrix result will
+				be written.
+			*dot* : a string (ending in '.dot') - file name
+				whether/where the result will be output as a dot file
+				to be used with graphviz.
+			*scoreandtime* : a string - file name
+				whether to only output the score and the time it took
+				to get that score - useful when comparing GOBNILP to
+				other structure learning methods.
+			*mec* : a string - file name
+				whether to print out the markov equivalence class of the
+				learned BN.
+			*pedigree* : a string - file name
+				whether to output the learned BN as a pedigree - only useful
+				when using GOBNILP for finding perdigrees.
 
 		(gobnilp/scoring/) 
 			*alpha* : equivalent sample size
