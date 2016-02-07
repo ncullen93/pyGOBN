@@ -14,12 +14,27 @@ solver goes to its creators Dr. James Cussens and
 Dr. Mark Bartlett.
 
 SCIP may be retrieved for ACADEMIC purposes only, and
-therefore this code may only be retrieved as such.
+therefore this code may only be retrieved as such unless
+the user of this code has a personal/commercial SCIP license.
 
 References
 ----------
 [1] Tobias Achterberg, SCIP: solving constraint integer programs,
 Mathematical Programming Computation, v1, n1, pgs 1-41, 2009.
+
+Acknowledgements from GOBNILP
+-----------------------------
+- GOBNILP version 1.2-1.6 and higher was supported by MRC Project Grant G1002312.
+- Many thanks are due to the SCIP developers for writing and distributing SCIP and 
+also helping with queries. Particular thanks are due to: Tobias Achterberg, 
+Timo Berthold, Ambros Gleixner, Gerald Gamrath, Stefan Heinz, Michael Winkler 
+and Kati Wolter.
+- Marc Pfetsch wrote the cons_linearordering.c constraint handler which provided 
+- useful 'template' which helped JC write cons_dagcluster.c.
+- The most important part of the separation routine in cons_dagcluster.c 
+uses the 'cluster constraint' introduced in [6]. Additional thanks to 
+Tommi Jaakkola and David Sontag for providing data and encouragement-to- 
+distribute, respectively.
 
 
 """
@@ -27,6 +42,8 @@ __author__ = """Nicholas Cullen <ncullen.th@dartmouth.edu>"""
 
 import os
 import subprocess
+import time
+import sys
 
 
 
@@ -105,7 +122,7 @@ class GOBN(object):
 	"""
 
 
-	def __init__(self, GOBN_DIR=None, SCIP_DIR=None, SETTINGS_FILE=None):
+	def __init__(self, made=False, GOBN_DIR=None, SCIP_DIR=None, SETTINGS_FILE=None, verbose=False):
 		"""
 		NOTE: 
 			By not passing any values to the above directory arguments,
@@ -162,6 +179,69 @@ class GOBN(object):
 		else:
 			self.SETTINGS_FILE = SETTINGS_FILE
 
+		self.verbose = verbose
+		self.made = made
+
+	###############################
+	##### SETTING UP GOBNILP ######
+	###############################
+
+	### MAIN EXECUTION COMMAND ###
+
+	def execute(self, command, _str=None, verbose=None, cwd=None):
+		"""
+		Main function to execute a command from the command line.
+
+		Arguments
+		---------
+		*command* : a python list,
+			The commands to run on the command line, separated in a list.
+
+		*_str* : a python string
+			What to print to the console before running this command, unless
+			self.verbose=True, in which case the actual command line stdout will
+			be printed to the command line.
+
+		*verbose* : None or Boolean
+			Whether to print the actual command line stdout to the console.
+
+		*cwd* : None or a string (file path)
+			Whether to change the working directory before running the command. This
+			is only used for linking SCIP to GOBNILP right now because that must be done
+			from inside the GOBNILP directory instead of the main pyGOBN directory.
+		"""
+		if verbose is None:
+			verbose = self.verbose
+
+		command = ' '.join(command)
+		process = subprocess.Popen(command, 
+			shell=True, 
+			stdout=subprocess.PIPE, 
+			stderr=subprocess.STDOUT,
+			cwd=cwd)
+
+		if verbose:
+			# Print command line output to console while it's happening
+			while True:
+				line = process.stdout.readline()
+				if nextline == '' and process.poll() != None:
+					break
+				sys.stdout.write(line)
+				sys.stdout.flush()
+		else:
+			# only print what is passed in as _str.
+			if _str is not None:
+				sys.stdout.write(_str)
+				sys.stdout.flush()
+
+		output = process.communicate()[0]
+		returncode = process.returncode
+
+		if returncode == 0:
+			return True, output
+		else:
+			return False, output
+
 	### UNPACK TAR FILES ###
 
 	def unpack(self):
@@ -174,7 +254,7 @@ class GOBN(object):
 		self.unpack_GOBN()
 		self.unpack_SCIP()
 
-	def unpack_GOBN(self):
+	def unpack_GOBN(self,_str=None):
 		"""
 		Unpack the GOBNILP tar file, which should exist at SELF.GOBN['TAR_FILE']
 
@@ -185,9 +265,19 @@ class GOBN(object):
 		This has been validated on my machine.
 		"""
 		dir_proc = subprocess.call(['mkdir', self.GOBN['DIR']])
-		unpack_proc = subprocess.call(['tar', '-xzvf', self.GOBN['TAR_FILE'], '-C', self.GOBN['DIR']])
+		unpack_command = ['tar', '-xzvf', self.GOBN['TAR_FILE'], '-C', self.GOBN['DIR']]
+		successful, output = self.execute(unpack_command,_str=_str)
+		if not successful:
+			print 'Unpack SCIP Failed for the following reason:'
+			print output
+			self.GOBN['UNPACKED'] = False
+		else:
+			if self.verbose:
+				print 'Unpack GOBN successful'
+			self.GOBN['UNPACKED'] = True
 
-	def unpack_SCIP(self):
+
+	def unpack_SCIP(self, _str=None):
 		"""
 		Unpack the SCIP tar file. 
 
@@ -198,35 +288,67 @@ class GOBN(object):
 
 		This has been validated on my machine.
 		"""
-		unpack_proc = subprocess.call(['tar', '-xzvf', self.SCIP['TAR_FILE'], '-C', 'scip'])		
+		unpack_command = ['tar', '-xzvf', self.SCIP['TAR_FILE'], '-C', 'scip']
+		successful, output = self.execute(unpack_command,_str=_str)
+		if not successful:
+			print 'Unpack SCIP Failed for the following reason:'
+			print output
+			self.SCIP['UNPACKED'] = False
+		else:
+			if self.verbose:
+				print 'Unpack SCIP successful'
+			self.SCIP['UNPACKED'] = True
 		
 	### MAKE SOURCE CODE ###
 
-	def make(self, CPLEX=False):
-		self.make_SCIP()
-		self.make_GOBNILP(CPLEX)
+	def make(self, CPLEX=False, verbose=None):
+		self.make_SCIP(verbose=verbose)
+		self.make_GOBNILP(CPLEX, verbose=verbose)
+		
 
-	def make_SCIP(self, test=False):
+	def make_SCIP(self, test=False, verbose=None, from_gobn=False):
 		"""
 		Steps:
 			1. Unpack SCIP if necessary
 			2. make
-		"""	
+		"""
+		if verbose is None:
+			verbose = self.verbose
 
-		print 'Making SCIP.. This may take a few minutes.'
-		make_proc = subprocess.call(['make', '-C', self.SCIP['DIR']])
+		### CHECK THAT SCIP HAS BEEN UNPACKED ###
+		if not self.SCIP['UNPACKED']:
+			_str = 'SCIP needs to be unpacked.. Trying that now. \n'
+			self.unpack_SCIP(_str)
+		
+		### If still not unpacked, it failed - so exit. ###
+		if not self.SCIP['UNPACKED']:
+			return None
 
-		if make_proc == 0:
-			print 'SCIP Make was successful.'
-			self.SCIP['MADE'] = True
+		if from_gobn:
+			_str = 'SCIP must be MADE before GOBNILP.. May take a few minutes.\n'
 		else:
-			print 'SCIP Make was unsuccessful'
-			self.SCIP['MADE'] = False
+			_str = 'Making SCIP.. This may take a few minutes.\n'
+		
+		### EXECUTE MAKE COMMAND ###
+		make_command = ['make', '-C', self.SCIP['DIR']]
+		successful, output = self.execute(make_command, _str=_str, verbose=verbose)
+		
+		if not successful:
+			print 'Make SCIP Failed for the following reason:'
+			print output
+			self.SCIP['UNPACKED'] = False
+		else:
+			if verbose:
+				print 'Make SCIP successful'
+			self.SCIP['UNPACKED'] = True
+
+
+		self.SCIP['MADE'] = True
 
 		if test:
 			test_out = subprocess.check_output(['make', 'test', '-C', self.SCIP['DIR']])
 	
-	def make_GOBNILP(self, CPLEX=False):
+	def make_GOBNILP(self, CPLEX=False, verbose=None):
 		"""
 		Make the GOBNILP source code.
 
@@ -234,56 +356,74 @@ class GOBN(object):
 		Steps:
 			1. Unpack GOBN if necessary
 			2. ./configure.sh SCIP_DIR
-			3. make (LPS=cpx)
+			3. make (LPS=cpx if possible)
 		"""
-		### CHECK THAT SCIP HAS BEEN MADE FIRST ###
+		if verbose is None:
+			verbose = self.verbose
+
+		### CHECK THAT SCIP HAS BEEN MADE ###
 		if not self.SCIP['MADE']:
-			print 'SCIP must be MADE first..'
+			self.make_SCIP(verbose=verbose, from_gobn=True)
+		# if still not made, it failed - so exit
+		if not self.SCIP['MADE']:
 			return None
+		
+		### CHECK THAT GOBNILP HAS BEEN UNPACKED ###
+		if not self.GOBN['UNPACKED']:
+			_str = 'GOBNILP needs to be unpacked .. Trying that now.\n'
+			self.unpack_GOBN(_str)
+			
 
 		### LINK SCIP TO GOBNILP ###
-		print 'Linking SCIP to GOBNILP..'
-		subprocess.call ()
+
+		_str = 'Linking SCIP to GOBNILP..\n'
 		scip_dir = os.path.join('../../', self.SCIP['SCIP_DIR'])
-
-		subprocess.call(['./configure.sh', scip_dir])
-		#config_out = subprocess.call(['./configure.sh', self.SCIP['SCIP_DIR']])
-
-		#gobnilp/gobnilp1.6.1/configure.sh scip/scipoptsuite-3.1.1/scip-3.1.1
-
-		if 'SUCCEEDED' in config_out:
+		config_command = ['./configure.sh', scip_dir]
+		successful, output = self.execute(config_command, _str=_str, cwd=self.GOBN['DIR'])
+		if 'SUCCEEDED' in output:
 			print 'SCIP Linking was successful.'
-		elif 'exists' in config_out:
+			subprocess.call(['cd' , '../../']) # change back to main dir
+		elif 'exists' in output:
 			print 'SCIP already Linked to GOBNILP.. Moving on.'
+			subprocess.call(['cd' , '../../']) # change back to main dir
 		else:
-			print 'SCIP Linking was unsuccessful.. Exiting.'
+			print 'SCIP Linking was unsuccessful for the following reason: \n'
+			print output
+			print '\n EXITING WITHOUT MAKING GOBNILP.\n'
+			subprocess.call(['cd' , '../../']) # change back to main dir
 			return None
 
 		### MAKE GOBNILP ###
 
-		#print 'Making GOBNILP..'
-		#if CPLEX:
-		#	make_proc = subprocess.call(['make', 'LPS=cpx', '-C', GOBN_DIR])
-		#else:
-		#	make_proc = subprocess.call(['make', '-C', GOBN_DIR])
-		#
-		#if make_proc == 0:
-		#	print 'GOBNILP Make was successful.'
-		#	self.GOBN_MADE = True
-		#else:
-		#	print 'GOBNILP Make was unsuccessful.'
+		
+		if CPLEX:
+			make_command = ['make', 'LPS=cpx', '-C', self.GOBN['DIR']]
+		else:
+			make_command = ['make', '-C', self.GOBN['DIR']]
+		_str = 'Making GOBNILP..\n'
+		successful, output = self.execute(make_command,_str=_str, verbose=verbose)
+		
+		if successful:
+			print 'GOBNILP Make was Successful. You can now use pyGOBN freely.'
+			self.GOBN['MADE'] = True
+			self.made = True
+		else:
+			print 'GOBNILP Make was UNSUCCESSFUL for the following reason: \n'
+			print output
+			print 'EXITING WITHOUT MAKING GOBNILP.'
+
 
 	def clean(self):
 		"""
-		Remove the unpacked tar files.
+		Remove/Delete the main SCIP and GOBNILP directories.
 		"""
 		gobn_proc = subprocess.call(['rm', '-r', self.GOBN['DIR']])
 		scip_proc = subprocess.call(['rm', '-r', self.SCIP['DIR']])
 
 
-	### TEST GOBNILP ###
-	def test_GOBN(self):
-		pass
+	################################
+	####### RUNNING GOBNILP ########
+	################################
 
 
 	### GOBNILP SETTINGS ###
