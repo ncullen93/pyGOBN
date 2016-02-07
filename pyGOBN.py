@@ -105,22 +105,32 @@ class GOBN(object):
 	"""
 
 
-	def __init__(self, GOB_DIR=None, SCIP_DIR=None):
+	def __init__(self, GOBN_DIR=None, SCIP_DIR=None, SET_DIR=None):
 		
-		if GOB_DIR is None:
-			self.GOB_DIR = 'gobnilp1.6.1'
+		if GOBN_DIR is None:
+			self.GOBN_DIR = 'gobnilp1.6.1'
+			self.GOBN_TARRED = False
 		else:
-			self.GOB_DIR = GOB_DIR
+			self.GOBN_DIR = GOBN_DIR
+			self.GOBN_TARRED = True
 
 		if SCIP_DIR is None:
 			self.SCIP_DIR = 'scipoptsuite-3.1.1/scip-3.1.1'
+			self.SCIP_TARRED = False
 		else:
 			self.SCIP_DIR = SCIP_DIR
+			self.SCIP_TARRED = True
+
+		if SET_DIR is None:
+			self.SET_DIR = 'mysettings.txt'
+		else:
+			self.SET_DIR = SET_DIR
 
 	### EXTRACT & MAKE METHODS ###
 	
-	def extract_gob_tar(self):
-		proc = subprocess.call(['tar', '-xzvf', 'gobnilp1.6.1.tar.gz', '-C', GOB_DIR])
+	def extract_gobn_tar(self):
+		proc = subprocess.call(['tar', '-xzvf', 'gobnilp1.6.1.tar.gz', '-C', GOBN_DIR])
+		return proc.returncode
 
 	def extract_scip_tar(self):
 		proc = subprocess.call(['tar', '-xzvf', 'scipoptsuite-3.1.1.tar.gz', '-C', SCIP_DIR])
@@ -134,20 +144,42 @@ class GOBN(object):
 
 		IMPORTANT: You must make SCIP before GOBNILP.
 		Steps:
-			1. ./configure.sh SCIP_DIR
-			2. make (LPS=cpx)
+			1. Untar GOBN if necessary
+			2. ./configure.sh SCIP_DIR
+			3. make (LPS=cpx)
 		"""
+		if not self.GOBN_TARRED:
+			print 'GOBN must be untarred.. Trying now'
+			tar_code = self.extract_gobn_tar()
+			if tar_code == 0:
+				print 'Un-Tar successful'
+				self.GOBN_TARRED = True
+			else:
+				print 'Un-Tar unsuccessful'
+				return None
+
 		config_proc = subprocess.call(['./configure.sh', SCIP_DIR])
 		if CPLEX:
-			make_proc = subprocess.call(['make', 'LPS=cpx', '-C', GOB_DIR])
+			make_proc = subprocess.call(['make', 'LPS=cpx', '-C', GOBN_DIR])
 		else:
-			make_proc = subprocess.call(['make', '-C', GOB_DIR])
+			make_proc = subprocess.call(['make', '-C', GOBN_DIR])
 
 	def make_SCIP(self):
 		"""
 		Steps:
-			1. make
+			1. Untar SCIP if necessary
+			2. make
 		"""
+		if not self.SCIP_TARRED:
+			print 'SCIP must be untarred.. Trying now'
+			tar_code = self.extract_scip_tar()
+			if tar_code == 0:
+				print 'Un-Tar successful'
+				self.SCIP_TARRED = True
+			else:
+				print 'Un-Tar unsuccessful'
+				return None		
+
 		make_proc = subprocess.call(['make', '-C', SKIP_DIR])
 
 	### GOBNILP SETTINGS ###
@@ -173,6 +205,9 @@ class GOBN(object):
 		OPTIONS
 		--------
 		(gobnilp/) 
+			*dagconstraintsfile* : a string - file name
+				the file where any dag constraints on edges/independencies
+				are stored.
 			*delimiter* : delimiter for passed-in data file
 			*mergedelimiters* : whether to merge delimiters
 			*minfounders* : min number of prior variables
@@ -181,6 +216,7 @@ class GOBN(object):
 			*nbns* : an integer,
 				how many BNs to learn - e.g. if nbns = 10, the solver
 				will return the 10 unqiue BNs with the highest score.
+
 
 		(gobnilp/outputfile/) 
 			*solution* : a string - file name
@@ -205,7 +241,7 @@ class GOBN(object):
 		(gobnilp/scoring/) 
 			*alpha* : equivalent sample size
 			*arities* : boolean, variable cardinalities
-			*names* : boolean, whether names are given
+			*names* : boolean, whether variable names are given
 			*palim* : max number of parents for each node
 			*prune* : whether to prune during scoring
 			*fast* : whether to use fast gamma function,
@@ -222,6 +258,15 @@ class GOBN(object):
 			*gap* : min optimality gap until termination
 
 
+		"""
+		with open('mysettings.txt', 'w') as f:
+			pass
+
+	def set_constraints(self, cons_dict):
+		"""
+		Set constraints/requirements on certain edges,
+		parent-child relationships, or conditional independencies
+		in the learned network.
 		"""
 		pass
 
@@ -255,7 +300,7 @@ class GOBN(object):
 		the local score for that choice of parents.
 		"""
 
-		gob_exec_path = os.path.join(self.GOB_DIR,'bin/gobnilp')
+		gob_exec_path = os.path.join(self.GOBN_DIR,'bin/gobnilp')
 		try:
 			proc = subprocess.call([gob_exec_path, data_path])
 		except OSError:

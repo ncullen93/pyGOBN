@@ -1,0 +1,8 @@
+gobnilp/delimiter = "whitespace"
+gobnilp/mergedelimiters = TRUE
+gobnilp/scoring/names = FALSE
+gobnilp/scoring/arities = FALSE
+gobnilp/outputfile/solution = "testsolution.txt"
+gobnilp/outputfile/adjacencymatrix = "testmat.mat"
+gobnilp/outputfile/scoreandtime = "testscoreandtime.txt"
+gobnilp/limits/time = 60
