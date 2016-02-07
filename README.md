@@ -1,7 +1,7 @@
 # pyGOBN
 
 <h2>Overview</h2>
-This is a project to create Python bindings for the amazing GOBNILP solver
+This is a project to create Python bindings for the GOBNILP solver
 for Global Optimization of Bayesian Network structure learning. The purpose
 and advantage of this repository is to allow easy integration of GOBNILP into
 existing Python libraries focused on Bayesian networks or otherwise. The first
@@ -10,6 +10,12 @@ example of such integration is found in "neuroBN" -- github.com/ncullen93/neuroB
 This work is not affiliated with GOBNILP or SCIP creators. Still, all credit for the real
 code behind all of this goes to Dr. James Cussens and Dr. Mark Bartlett 
 for the creation of GOBNILP, and to the creators of SCIP.
+
+Here are the links to GOBNILP and SCIP:
+
+	- https://www.cs.york.ac.uk/aig/sw/gobnilp/
+
+	- http://scip.zib.de/#scipoptsuite
 
 <h2>Pre-Reqs</h2>
 From my understanding, the only necessary requirement for setting up GOBNILP
