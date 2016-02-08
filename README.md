@@ -8,7 +8,7 @@ existing Python libraries focused on Bayesian networks. The first
 example of such integration is found in "neuroBN" -- github.com/ncullen93/neuroBN.
 
 This work is not affiliated with GOBNILP or SCIP. Still, all credit for the real
-code behind all of this goes to Dr. James Cussens and Dr. Mark Bartlett 
+code behind this project goes to Dr. James Cussens and Dr. Mark Bartlett 
 for the creation of GOBNILP, and to the creators of SCIP. Please contact me - Nick Cullen - at
 ncullen.th@dartmouth.edu with any comments or concerns.
 
