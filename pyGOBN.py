@@ -154,13 +154,13 @@ class GOBN(object):
 
 
 	def __init__(self,
-				GOBN_DIR='gobn/gobnilp1.6.1', 
-				SCIP_DIR='scip/scipoptsuite-3.1.1',
-				GOBN_VERSION='1.6.1',
-				SCIP_VERSION='3.1.1',
-				SETTINGS_FILE='mysettings.txt', 
-				CONSTRAINTS_FILE='dag.constraints', 
-				VERBOSE=False):
+		GOBN_DIR='gobn/gobnilp1.6.1', 
+		SCIP_DIR='scip/scipoptsuite-3.1.1',
+		GOBN_VERSION='1.6.1',
+		SCIP_VERSION='3.1.1',
+		SETTINGS_FILE='mysettings.txt', 
+		CONSTRAINTS_FILE='dag.constraints', 
+		VERBOSE=False):
 		"""
 		NOTE: 
 			By not passing any values to the above directory arguments,
