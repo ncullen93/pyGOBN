@@ -73,6 +73,9 @@ import time
 import sys
 import re
 
+import numpy as np
+import pandas as pd
+
 
 
 class GOBN(object):
@@ -151,11 +154,13 @@ class GOBN(object):
 
 
 	def __init__(self,
-				GOBN_DIR=None, 
-				SCIP_DIR=None, 
-				SETTINGS_FILE=None, 
-				CONSTRAINTS_FILE=None, 
-				verbose=False):
+				GOBN_DIR='gobn/gobnilp1.6.1', 
+				SCIP_DIR='scip/scipoptsuite-3.1.1',
+				GOBN_VERSION='1.6.1',
+				SCIP_VERSION='3.1.1',
+				SETTINGS_FILE='mysettings.txt', 
+				CONSTRAINTS_FILE='dag.constraints', 
+				VERBOSE=False):
 		"""
 		NOTE: 
 			By not passing any values to the above directory arguments,
@@ -173,46 +178,22 @@ class GOBN(object):
 
 
 		"""
-		
-		if GOBN_DIR is None:
-			self.GOBN = {
-				'DIR': 'gobnilp/gobnilp1.6.1', # main GOBNILP directory
-				'TAR_FILE' : 'gobnilp/gobnilp1.6.1.tar.gz',
-				'UNPACKED' : False,
-				'MADE' : False
-			}
-		else:
-			self.GOBN = {
+		self.GOBN = {
 				'DIR': GOBN_DIR, # main GOBNILP directory
 				'TAR_FILE' : 'gobnilp/gobnilp1.6.1.tar.gz',
-				'UNPACKED' : True,
-				'MADE' : True
-			}
+				'UNPACKED' : False,
+				'MADE' : False}
 
-		if SCIP_DIR is None:
-			self.SCIP = {
-				'DIR' : 'scip/scipoptsuite-3.1.1', # main SCIP directory
-				'SCIP_DIR' : 'scip/scipoptsuite-3.1.1/scip-3.1.1',
+		self.SCIP = {
+				'DIR' : SCIP_DIR, # main SCIPOPTSUITE directory
+				'SCIP_DIR' : 'scip/scipoptsuite-3.1.1/scip-3.1.1', # main SCIP dir
 				'TAR_FILE' : 'scip/scipoptsuite-3.1.1.tgz',
 				'UNPACKED' : False,
-				'MADE' : False
-			}
-		else:
-			self.SCIP = {
-				'DIR' : SCIP_DIR, # main SCIP directory
-				'SCIP_DIR' : 'scip/scipoptsuite-3.1.1/scip-3.1.1',
-				'TAR_FILE' : 'scip/scipoptsuite-3.1.1.tgz',
-				'UNPACKED' : True,
-				'MADE' : True
+				'MADE' : False}
 
-			}
-
-		if SETTINGS_FILE is None:
-			self.SETTINGS_FILE = 'mysettings.txt'
-		else:
-			self.SETTINGS_FILE = SETTINGS_FILE
-
-		self.verbose = verbose
+		self.SETTINGS_FILE = SETTINGS_FILE
+		self.CONSTRAINTS_FILE = CONSTRAINTS_FILE
+		self.VERBOSE = VERBOSE
 
 	###############################
 	##### SETTING UP GOBNILP ######
@@ -231,7 +212,7 @@ class GOBN(object):
 
 		*_str* : a python string
 			What to print to the console before running this command, unless
-			self.verbose=True, in which case the actual command line stdout will
+			self.VERBOSE=True, in which case the actual command line stdout will
 			be printed to the command line.
 
 		*verbose* : None or Boolean
@@ -243,7 +224,7 @@ class GOBN(object):
 			from inside the GOBNILP directory instead of the main pyGOBN directory.
 		"""
 		if verbose is None:
-			verbose = self.verbose
+			verbose = self.VERBOSE
 
 		command = ' '.join(command)
 		process = subprocess.Popen(command, 
@@ -304,7 +285,7 @@ class GOBN(object):
 			print output
 			self.GOBN['UNPACKED'] = False
 		else:
-			if self.verbose:
+			if self.VERBOSE:
 				print 'Unpack GOBN successful'
 			self.GOBN['UNPACKED'] = True
 
@@ -327,7 +308,7 @@ class GOBN(object):
 			print output
 			self.SCIP['UNPACKED'] = False
 		else:
-			if self.verbose:
+			if self.VERBOSE:
 				print 'Unpack SCIP successful'
 			self.SCIP['UNPACKED'] = True
 		
@@ -345,7 +326,7 @@ class GOBN(object):
 			2. make
 		"""
 		if verbose is None:
-			verbose = self.verbose
+			verbose = self.VERBOSE
 
 		### CHECK THAT SCIP HAS BEEN UNPACKED ###
 		if not self.SCIP['UNPACKED']:
@@ -391,7 +372,7 @@ class GOBN(object):
 			3. make (LPS=cpx if possible)
 		"""
 		if verbose is None:
-			verbose = self.verbose
+			verbose = self.VERBOSE
 
 		### CHECK THAT SCIP HAS BEEN MADE ###
 		if not self.SCIP['MADE']:
@@ -616,10 +597,6 @@ class GOBN(object):
 						i_cons = '%s_|_%s|%s' % (lhs, rhs, cond)
 					f.write(i_cons)
 
-
-
-
-
 	def write_data(self, data):
 		"""
 		Write data to file in order to be read by GOBNILP solver.
@@ -627,6 +604,7 @@ class GOBN(object):
 		This function should support numpy ndarray and pandas dataframe.
 		"""
 		pass
+		
 
 	### RUN METHODS ###
 
