@@ -690,7 +690,14 @@ class GOBN(object):
 
 		bin_path = os.path.join(self.GOBN['DIR'], 'bin/gobnilp')
 		learn_cmd = [bin_path, '-g=', self.SETTINGS_FILE, '-f=dat', DATA_PATH]
+		_str = 'Running GOBNILP Solver.. This may take a few minutes.'
+		successful, output = self.execute(learn_cmd, _str=_str)
 
+		if successful:
+			print 'Solver run was SUCCESSFUL'
+		else:
+			print 'Solver run was UNSUCCESSFUL for the following reason: \n'
+			print output
 
 
 
