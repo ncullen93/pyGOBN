@@ -154,13 +154,13 @@ class GOBN(object):
 
 
 	def __init__(self,
-		GOBN_DIR='gobn/gobnilp1.6.1', 
-		SCIP_DIR='scip/scipoptsuite-3.1.1',
-		GOBN_VERSION='1.6.1',
-		SCIP_VERSION='3.1.1',
-		SETTINGS_FILE='mysettings.txt', 
-		CONSTRAINTS_FILE='dag.constraints', 
-		VERBOSE=False):
+			GOBN_DIR='gobn/gobnilp1.6.1', 
+			SCIP_DIR='scip/scipoptsuite-3.1.1',
+			GOBN_VERSION='1.6.1',
+			SCIP_VERSION='3.1.1',
+			SETTINGS_FILE='mysettings.txt', 
+			CONSTRAINTS_FILE='dag.constraints', 
+			VERBOSE=False):
 		"""
 		NOTE: 
 			By not passing any values to the above directory arguments,
@@ -541,15 +541,16 @@ class GOBN(object):
 
 	### EDGE AND INDEPENDENCE CONSTRAINTS
 
-	def set_constraints(self, edges=None, independencies=None, append=False):
+	def set_constraints(self, **edges, *independencies, *nonedges):
 		"""
 		Set constraints/requirements on certain edges,
 		parent-child relationships, or conditional independencies
 		in the learned network.
 
-		Since there are two types of constraints -- those on edges and
+		Since there are three types of constraints -- those for on/off edges and
 		those on conditional independence relationships -- there are
-		two arguments to pass into this function: *edges* and *independencies*.
+		two arguments to pass into this function: *edges*, *independencies*,
+		and *nonedges*.
 		The format of these arguments is explained below.
 
 		Arguments
@@ -570,6 +571,13 @@ class GOBN(object):
 				- ('A','B','C') means that A _|_ B | C
 				- ('B', 'C') means that B _|_ C
 
+		*nonedges* : a dictionary,
+			the same format as *edges*, except the interpretation is that
+			the rv is NOT a parent of any of the rvs in the list.
+			Examples:
+				nonedges = {'C',['A','B']} means that there must NOT be edges
+				from C -> A or from C -> B in the learned network.
+
 		*append* : a boolean
 			Whether to append these constraints to the existing constraint file,
 			or overwrite the existing constraint file. The default is to overwrite
@@ -577,25 +585,31 @@ class GOBN(object):
 
 		"""
 		with open(self.CONSTRAINTS_FILE, 'w') as f:
-			if edges is not None:
-				for rv, children in edges.items():
-					for child in children:
-						e_cons = '%s <- %s' % (child, rv)
-						f.write(e_cons)
+			
+			# EDGE CONSTRAINTS
+			for rv, children in edges.items():
+				for child in children:
+					e_cons = '%s<-%s' % (child, rv)
+					f.write(e_cons)
 
-			if independencies is not None:
-				for i in independencies:
-					# MARGINAL INDEPENDENCIES
-					if len(i) == 2:
-						lhs = ','.join(i[0])
-						rhs = ','.join(i[1])
-						i_cons = '%s_|_%s' % (lhs, rhs)
-					elif len(i) == 3:
-						lhs = ','.join(i[0])
-						rhs = ','.join(i[1])
-						cond = ','.join(i[2])
-						i_cons = '%s_|_%s|%s' % (lhs, rhs, cond)
-					f.write(i_cons)
+			# INDEPENDENCIES CONSTRAINTS
+			for i in independencies:
+				if len(i) == 2:
+					lhs = ','.join(i[0])
+					rhs = ','.join(i[1])
+					i_cons = '%s_|_%s' % (lhs, rhs)
+				elif len(i) == 3:
+					lhs = ','.join(i[0])
+					rhs = ','.join(i[1])
+					cond = ','.join(i[2])
+					i_cons = '%s_|_%s|%s' % (lhs, rhs, cond)
+				f.write(i_cons)
+
+			# NON-EDGE CONSTRAINTS
+			for rv, children in nonedges.items():
+				for child in children:
+					e_cons = '~%s<-%s' % (child, rv)
+					f.write(e_cons)
 
 	def write_data(self, data):
 		"""
