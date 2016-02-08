@@ -3,13 +3,14 @@
 <h2>Overview</h2>
 This is a project to create Python bindings for the GOBNILP solver
 for Global Optimization of Bayesian Network structure learning. The purpose
-and advantage of this repository is to allow easy integration of GOBNILP into
-existing Python libraries focused on Bayesian networks or otherwise. The first
+of this repository is to encourage and allow easy integration of GOBNILP into
+existing Python libraries focused on Bayesian networks. The first
 example of such integration is found in "neuroBN" -- github.com/ncullen93/neuroBN.
 
 This work is not affiliated with GOBNILP or SCIP creators. Still, all credit for the real
 code behind all of this goes to Dr. James Cussens and Dr. Mark Bartlett 
-for the creation of GOBNILP, and to the creators of SCIP.
+for the creation of GOBNILP, and to the creators of SCIP. Please contact me - Nick Cullen - at
+ncullen.th@dartmouth.edu with any comments or concerns.
 
 Here are the links to GOBNILP and SCIP:
 
@@ -51,12 +52,12 @@ along with a numpy ndarray or a pandas dataframe:
 
 <h2>Pre-Reqs</h2>
 From my understanding, the only necessary requirement for setting up GOBNILP
-is a C++ compiler. This code was written for a Mac computer, which already has
-the 'make' command built-in. Since the code calls the 'tar' command to unpack
-the source code files, i'm assuming it's necessary to have that command as well. 
-It's quite likely that this code will only work on Mac OS and probably
-Linux at the moment. I welcome any feedback from Windows users who want this to
-work on their machines.
+is access to the 'make' command (i.e. a compiler). This code was written for a Mac, 
+which already has the 'make' command built-in. Since the code calls the 'tar' 
+command to unpack the source code files, i'm assuming it's necessary to have 
+that command as well. It's quite likely that this code will only work on Mac OS 
+and probably Linux at the moment. If any Windows users come across any issues, please
+let me know at ncullen.th@dartmouth.edu and i'll fix it!
 
 
 
