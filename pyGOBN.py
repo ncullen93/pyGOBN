@@ -150,7 +150,12 @@ class GOBN(object):
 	"""
 
 
-	def __init__(self, made=False, GOBN_DIR=None, SCIP_DIR=None, SETTINGS_FILE=None, verbose=False):
+	def __init__(self,
+				GOBN_DIR=None, 
+				SCIP_DIR=None, 
+				SETTINGS_FILE=None, 
+				CONSTRAINTS_FILE=None, 
+				verbose=False):
 		"""
 		NOTE: 
 			By not passing any values to the above directory arguments,
@@ -203,12 +208,11 @@ class GOBN(object):
 			}
 
 		if SETTINGS_FILE is None:
-			self.SETTINGS_FILE = 'gobnilp/mysettings.txt'
+			self.SETTINGS_FILE = 'mysettings.txt'
 		else:
 			self.SETTINGS_FILE = SETTINGS_FILE
 
 		self.verbose = verbose
-		self.made = made
 
 	###############################
 	##### SETTING UP GOBNILP ######
@@ -434,7 +438,7 @@ class GOBN(object):
 		if successful:
 			print 'GOBNILP Make was Successful. You can now use pyGOBN freely.'
 			self.GOBN['MADE'] = True
-			self.made = True
+			 = True
 		else:
 			print 'GOBNILP Make was UNSUCCESSFUL for the following reason: \n'
 			print output
@@ -532,7 +536,7 @@ class GOBN(object):
 
 		"""
 		# Read mysettings.txt into one big string
-		with open('mysettings.txt', 'r') as f:
+		with open(self.SETTINGS_FILE, 'r') as f:
 			txt = f.read()
 
 		# For all of the passed-in settings, replace the
@@ -540,7 +544,7 @@ class GOBN(object):
 		for s_name, s_val in settings_dict.items():
 			start_idx = txt.find(s_name)
 			if start_idx == -1:
-				print '%s is not a valid setting' % s_name
+				print '%s is not a valid setting.. Moving on.' % s_name
 			else:
 				temp_sv = txt[start_idx:].rsplit('\n')[0]
 				val_start = start_idx + temp_sv.index('=') + 1
@@ -551,22 +555,76 @@ class GOBN(object):
 					txt = txt[:val_start+1] + str(s_val) + txt[val_end:]
 
 		# Write the altered text back to mysettings.txt
-		with open('mysettings.txt', 'w') as f:
+		with open(self.SETTINGS_FILE, 'w') as f:
 			f.write(txt)
+
+	### EDGE AND INDEPENDENCE CONSTRAINTS
+
+	def set_constraints(self, edges=None, independencies=None, append=False):
+		"""
+		Set constraints/requirements on certain edges,
+		parent-child relationships, or conditional independencies
+		in the learned network.
+
+		Since there are two types of constraints -- those on edges and
+		those on conditional independence relationships -- there are
+		two arguments to pass into this function: *edges* and *independencies*.
+		The format of these arguments is explained below.
+
+		Arguments
+		---------
+		*edges* : a dictionary,
+			where key = main rv and value = list of rvs which are REQUIRED
+			to be the main rv's children.
+			Examples:
+				edges = {'C':['A','B']} means that there MUST be edges from
+					C -> A and from C -> B in the learned network.
+
+		*independencies* : a list of 2-tuples or 3-tuples,
+			where each tuple element can be another tuple representing a 
+			set of random variables.
+			Examples:
+				- (('A','B'), 'C') means that A,B _|_ C.
+				- ('A',('B','C'),'D') means that A _|_ B,C | D
+				- ('A','B','C') means that A _|_ B | C
+				- ('B', 'C') means that B _|_ C
+
+		*append* : a boolean
+			Whether to append these constraints to the existing constraint file,
+			or overwrite the existing constraint file. The default is to overwrite
+			the existing constraint file.
+
+		"""
+		with open(self.CONSTRAINTS_FILE, 'w') as f:
+			if edges is not None:
+				for rv, children in edges.items():
+					for child in children:
+						e_cons = '%s <- %s' % (child, rv)
+						f.write(e_cons)
+
+			if independencies is not None:
+				for i in independencies:
+					# MARGINAL INDEPENDENCIES
+					if len(i) == 2:
+						lhs = ','.join(i[0])
+						rhs = ','.join(i[1])
+						i_cons = '%s_|_%s' % (lhs, rhs)
+					elif len(i) == 3:
+						lhs = ','.join(i[0])
+						rhs = ','.join(i[1])
+						cond = ','.join(i[2])
+						i_cons = '%s_|_%s|%s' % (lhs, rhs, cond)
+					f.write(i_cons)
+
+
+
+
 
 	def write_data(self, data):
 		"""
 		Write data to file in order to be read by GOBNILP solver.
 
 		This function should support numpy ndarray and pandas dataframe.
-		"""
-		pass	
-
-	def set_constraints(self, cons_dict):
-		"""
-		Set constraints/requirements on certain edges,
-		parent-child relationships, or conditional independencies
-		in the learned network.
 		"""
 		pass
 
