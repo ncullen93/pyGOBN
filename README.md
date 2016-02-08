@@ -37,7 +37,12 @@ To unpack/link/make the GOBNILP solver, simply run the following commands:
 
 	- 'g.make()'
 
-Any errors will be reported to you, but it has been extensively tested.
+To set or alter the parameters settings for the GOBNILP solver, use the following function:
+
+	- >>> g = GOBN()
+	- >>> edge_reqs = {'A':['B','C'],'B':['D']}
+	- ''
+
 
 <h2>Extended Usage</h2>
 
