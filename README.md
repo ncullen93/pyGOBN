@@ -17,15 +17,6 @@ Here are the links to GOBNILP and SCIP:
 
 	- http://scip.zib.de/#scipoptsuite
 
-<h2>Pre-Reqs</h2>
-From my understanding, the only necessary requirement for setting up GOBNILP
-is a C++ compiler. This code was written for a Mac computer, which already has
-the 'make' command built-in. Since the code calls the 'tar' command to unpack
-the source code files, i'm assuming it's necessary to have that command as well. 
-It's quite likely that this code will only work on Mac OS and probably
-Linux at the moment. I welcome any feedback from Windows users who want this to
-work on their machines.
-
 <h2>Usage</h2>
 To unpack/link/make GOBNILP & SCIP for the first time, run the following commands:
 
@@ -57,6 +48,15 @@ along with a numpy ndarray or a pandas dataframe:
 	>>> nonedge_reqs = {'B':['C']} # disallow that B->C
 	>>> data = np.loadtxt('testfile.txt')
 	>>> g.learn(data, settings_dict, edge_reqs, ind_reqs, nonedge_reqs)
+
+<h2>Pre-Reqs</h2>
+From my understanding, the only necessary requirement for setting up GOBNILP
+is a C++ compiler. This code was written for a Mac computer, which already has
+the 'make' command built-in. Since the code calls the 'tar' command to unpack
+the source code files, i'm assuming it's necessary to have that command as well. 
+It's quite likely that this code will only work on Mac OS and probably
+Linux at the moment. I welcome any feedback from Windows users who want this to
+work on their machines.
 
 
 
