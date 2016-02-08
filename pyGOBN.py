@@ -622,7 +622,7 @@ class GOBN(object):
 
 	### RUN METHODS ###
 
-	def learn(self, data, settings=None, constraints=None):
+	def learn(self, data, *settings, **edge_reqs, *ind_reqs, *nonedge_reqs):
 		"""
 		Main function to run GOBNILP.
 

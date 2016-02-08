@@ -27,21 +27,36 @@ Linux at the moment. I welcome any feedback from Windows users who want this to
 work on their machines.
 
 <h2>Quick Usage</h2>
-To unpack/link/make the GOBNILP solver, simply run the following commands:
+To unpack/link/make GOBNILP & SCIP for the first time, run the following commands:
 
 	>>> from pyGOBN import *
 	>>> g = GOBN()
 	>>> g.make()
 
-To set of alter
+To set or alter global parameter settings for the GOBNILP solver, use the following function:
+
+	>>> g = GOBN()
+	>>> settings_dict = {'delimiter':'whitespace', 'time':120, alpha:1000}
+	>>> g.set_settings(settings_dict)
 
 To set or alter the learned network constraints for the GOBNILP solver, use the following function:
 
 	>>> g = GOBN()
-	>>> edge_reqs = {'A':['B','C'],'B':['D']} # parent-child edges required to exist in learned network
-	>>> nonedge_reqs = {'B':['C']} # parent-child edges required NOT to exist in learned network
+	>>> edge_reqs = {'A':['B','C'],'B':['D']} # require that A->B, A->C, and B->D
 	>>> ind_reqs = [('A','D'),(('A','B'),'D','C')] # require that A _|_ D and A,B _|_ D | C
+	>>> nonedge_reqs = {'B':['C']} # disallow that B->C
 	>>> g.set_constraints(edges=edge_reqs, ind_reqs=ind_reqs, nonedge_reqs=nonedge_reqs)
+
+Additionally, the global parameter settings and constraints can be passed in to the main 'learn' function,
+along with a numpy ndarray or a pandas dataframe:
+
+	>>> g = GOBN()
+	>>> settings_dict = {'delimiter':'whitespace', 'time':120, alpha:1000}
+	>>> edge_reqs = {'A':['B','C'],'B':['D']} # require that A->B, A->C, and B->D
+	>>> ind_reqs = [('A','D'),(('A','B'),'D','C')] # require that A _|_ D and A,B _|_ D | C
+	>>> nonedge_reqs = {'B':['C']} # disallow that B->C
+	>>> data = np.loadtxt('testfile.txt')
+	>>> g.learn(data, settings_dict, edge_reqs, ind_reqs, nonedge_reqs)
 
 <h2>Extended Usage</h2>
 
