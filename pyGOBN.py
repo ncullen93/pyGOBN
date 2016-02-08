@@ -441,7 +441,7 @@ class GOBN(object):
 
 	### GOBNILP SETTINGS ###
 
-	def set_settings(self, settings_dict):
+	def set_settings(self, settings):
 		"""
 		Create the "gobnilp.set" file that will be passed in
 		as an argument on the command-line run of GOBNILP using
@@ -455,7 +455,7 @@ class GOBN(object):
 
 		Arguments
 		---------
-		*settings_dict* : a dictionary, where
+		*settings* : a dictionary, where
 			key = setting and value = setting value.
 
 		SETTINGS 
@@ -522,7 +522,7 @@ class GOBN(object):
 
 		# For all of the passed-in settings, replace the
 		# existing values in mysettings.txt
-		for s_name, s_val in settings_dict.items():
+		for s_name, s_val in settings.items():
 			start_idx = txt.find(s_name)
 			if start_idx == -1:
 				print '%s is not a valid setting.. Moving on.' % s_name
