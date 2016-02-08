@@ -1,0 +1,26 @@
+# gobnilp/dagconstraintsfile = "dag.constraints"
+gobnilp/delimiter = "whitespace"
+gobnilp/mergedelimiters = TRUE
+gobnilp/minfounders = 0
+gobnilp/edge_penality = 0
+gobnilp/nbns = 5
+#
+gobnilp/outputfile/solution = "out.sol"
+gobnilp/outputfile/adjacencymatrix = "out.mat"
+# gobnilp/outputfile/dot = "out.dot"
+# gobnilp/outputfile/scoreandtime = "out.scoretime"
+# gobnilp/outputfile/mec = "out.mec"
+# gobnilp/outputfile/pedigree = "out.pedigree"
+#
+gobnilp/scoring/alpha = 1
+gobnilp/scoring/arities = FALSE
+gobnilp/scoring/names = FALSE
+gobnilp/scoring/palim = 5
+gobnilp/scoring/prune = FALSE
+gobnilp/scoring/fast = FALSE
+# 
+# heuristics/sinks/probing = FALSE
+# heuristics/sinks/maxdivedepth = -1
+#
+limits/time = 120
+# limits/gap = 1

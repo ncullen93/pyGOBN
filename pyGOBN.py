@@ -530,8 +530,11 @@ class GOBN(object):
 
 
 		"""
-		with open('mysettings.txt', 'w') as f:
-			pass
+		with open('mysettings.txt', 'a') as f:
+			for line in f:
+				for s_name, s_val in settings_dict:
+					if s_name in line:
+						print line
 
 	def set_constraints(self, cons_dict):
 		"""
