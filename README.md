@@ -22,33 +22,33 @@ Here are the links to GOBNILP and SCIP:
 To unpack/link/make GOBNILP & SCIP for the first time, run the following commands:
 
 	>>> from pyGOBN import *
-	>>> g = GOBN()
-	>>> g.make()
+	>>> gobn = GOBN()
+	>>> gobn.make()
 
 To set or alter global parameter settings for the GOBNILP solver, use the following function:
 
-	>>> g = GOBN()
+	>>> gobn = GOBN()
 	>>> settings = {'delimiter':'whitespace', 'time':120, alpha:1000}
-	>>> g.set_settings(settings)
+	>>> gobn.set_settings(settings)
 
 To set or alter the learned network constraints for the GOBNILP solver, use the following function:
 
-	>>> g = GOBN()
+	>>> gobn = GOBN()
 	>>> edge_reqs = {'A':['B','C'],'B':['D']} # require that A->B, A->C, and B->D
 	>>> ind_reqs = [('A','D'),(('A','B'),'D','C')] # require that A _|_ D and A,B _|_ D | C
 	>>> nonedge_reqs = {'B':['C']} # disallow that B->C
-	>>> g.set_constraints(edge_reqs, ind_reqs, nonedge_reqs)
+	>>> gobn.set_constraints(edge_reqs, ind_reqs, nonedge_reqs)
 
 Additionally, the global parameter settings and constraints can be passed in to the main 'learn' function,
 along with a numpy ndarray or a pandas dataframe:
 
-	>>> g = GOBN()
+	>>> gobn = GOBN()
 	>>> settings = {'delimiter':'whitespace', 'time':120, 'alpha':1000}
 	>>> edge_reqs = {'A':['B','C'],'B':['D']} # require that A->B, A->C, and B->D
 	>>> ind_reqs = [('A','D'),(('A','B'),'D','C')] # require that A _|_ D and A,B _|_ D | C
 	>>> nonedge_reqs = {'B':['C']} # disallow that B->C
 	>>> data = np.loadtxt('testfile.txt')
-	>>> g.learn(data, settings, edge_reqs, ind_reqs, nonedge_reqs)
+	>>> gobn.learn(data, settings, edge_reqs, ind_reqs, nonedge_reqs)
 
 <h2>Pre-Reqs</h2>
 From my understanding, the only necessary requirement for setting up GOBNILP
