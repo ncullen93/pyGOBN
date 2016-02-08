@@ -554,7 +554,13 @@ class GOBN(object):
 		with open('mysettings.txt', 'w') as f:
 			f.write(txt)
 
-		
+	def write_data(self, data):
+		"""
+		Write data to file in order to be read by GOBNILP solver.
+
+		This function should support numpy ndarray and pandas dataframe.
+		"""
+		pass	
 
 	def set_constraints(self, cons_dict):
 		"""
@@ -566,7 +572,7 @@ class GOBN(object):
 
 	### RUN METHODS ###
 
-	def run(self, data_path):
+	def learn(self, data, settings=None, constraints=None):
 		"""
 		Main function to run GOBNILP.
 
@@ -593,17 +599,10 @@ class GOBN(object):
 		with one line for each node specifying its parents and
 		the local score for that choice of parents.
 		"""
-
-		gob_exec_path = os.path.join(self.GOBN_DIR,'bin/gobnilp')
-		try:
-			proc = subprocess.call([gob_exec_path, data_path])
-		except OSError:
-			print 'Path to Data is not correct.'
-		
-		if proc.returncode == 0:
-			print 'Successful Run'
-		else:
-			print 'Unsuccessful Run'
+		if settings:
+			self.set_settings(settings)
+		if constraints:
+			self.set_constraints(constraints)
 
 
 
