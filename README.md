@@ -42,7 +42,7 @@ Additionally, the global parameter settings and constraints can be passed in to 
 along with a numpy ndarray or a pandas dataframe:
 
 	>>> g = GOBN()
-	>>> settings_dict = {'delimiter':'whitespace', 'time':120, alpha:1000}
+	>>> settings_dict = {'delimiter':'whitespace', 'time':120, 'alpha':1000}
 	>>> edge_reqs = {'A':['B','C'],'B':['D']} # require that A->B, A->C, and B->D
 	>>> ind_reqs = [('A','D'),(('A','B'),'D','C')] # require that A _|_ D and A,B _|_ D | C
 	>>> nonedge_reqs = {'B':['C']} # disallow that B->C
