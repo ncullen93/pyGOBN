@@ -159,7 +159,7 @@ class GOBN(object):
 			GOBN_VERSION='1.6.1',
 			SCIP_VERSION='3.1.1',
 			SETTINGS_FILE='mysettings.txt', 
-			CONSTRAINTS_FILE='dag.constraints', 
+			CONSTRAINTS_FILE='dag.constraints',
 			VERBOSE=False):
 		"""
 		NOTE: 
@@ -194,6 +194,7 @@ class GOBN(object):
 		self.SETTINGS_FILE = SETTINGS_FILE
 		self.CONSTRAINTS_FILE = CONSTRAINTS_FILE
 		self.VERBOSE = VERBOSE
+		self.DATA_DIR = os.path.join(self.GOBN['DIR'], 'data')
 
 	###############################
 	##### SETTING UP GOBNILP ######
@@ -541,7 +542,7 @@ class GOBN(object):
 
 	### EDGE AND INDEPENDENCE CONSTRAINTS
 
-	def set_constraints(self, **edge_reqs, *ind_reqs, *nonedge_reqs):
+	def set_constraints(self, edge_reqs={}, ind_reqs={}, nonedge_reqs={}, append=False):
 		"""
 		Set constraints/requirements on certain edges,
 		parent-child relationships, or conditional independencies
@@ -584,45 +585,73 @@ class GOBN(object):
 			the existing constraint file.
 
 		"""
-		with open(self.CONSTRAINTS_FILE, 'w') as f:
+		if append:
+			f = open(self.CONSTRAINTS_FILE,	'a')
+		else:
+			f = open(self.CONSTRAINTS_FILE, 'w')
 			
-			# EDGE CONSTRAINTS
-			for rv, children in edges.items():
-				for child in children:
-					e_cons = '%s<-%s' % (child, rv)
-					f.write(e_cons)
+		# EDGE CONSTRAINTS
+		for rv, children in edges.items():
+			for child in children:
+				e_cons = '%s<-%s' % (child, rv)
+				f.write(e_cons)
 
-			# INDEPENDENCIES CONSTRAINTS
-			for i in independencies:
-				if len(i) == 2:
-					lhs = ','.join(i[0])
-					rhs = ','.join(i[1])
-					i_cons = '%s_|_%s' % (lhs, rhs)
-				elif len(i) == 3:
-					lhs = ','.join(i[0])
-					rhs = ','.join(i[1])
-					cond = ','.join(i[2])
-					i_cons = '%s_|_%s|%s' % (lhs, rhs, cond)
-				f.write(i_cons)
+		# INDEPENDENCIES CONSTRAINTS
+		for i in independencies:
+			if len(i) == 2:
+				lhs = ','.join(i[0])
+				rhs = ','.join(i[1])
+				i_cons = '%s_|_%s' % (lhs, rhs)
+			elif len(i) == 3:
+				lhs = ','.join(i[0])
+				rhs = ','.join(i[1])
+				cond = ','.join(i[2])
+				i_cons = '%s_|_%s|%s' % (lhs, rhs, cond)
+			f.write(i_cons)
 
-			# NON-EDGE CONSTRAINTS
-			for rv, children in nonedges.items():
-				for child in children:
-					e_cons = '~%s<-%s' % (child, rv)
-					f.write(e_cons)
+		# NON-EDGE CONSTRAINTS
+		for rv, children in nonedges.items():
+			for child in children:
+				e_cons = '~%s<-%s' % (child, rv)
+				f.write(e_cons)
 
-	def write_data(self, data):
+		f.close()
+
+	def write_data(self, data, names=None):
 		"""
-		Write data to file in order to be read by GOBNILP solver.
+		Write data to file in order to be read by GOBNILP solver, and
+		return the path to which the passed-in data file was written.
 
 		This function should support numpy ndarray and pandas dataframe.
 		"""
-		pass
+		settings = {'delimiter': ','}
+		data_path = os.path.join(self.DATA_DIR, 'userdata.dat')
+
+		if isinstance(data, np.ndarray):
+			if names is not None:
+				np.savetxt(data_path, data, sep=',', header=names)
+				settings['names'] = 'TRUE'
+			else:
+				np.savetxt(data_path, data)
+		elif isinstance(data, pd.dataframe):
+			data.to_csv(data_path, sep=',')
+			settings['names'] = 'TRUE'
+
+		self.set_settings(settings)
+
+		return data_path
 		
 
 	### RUN METHODS ###
 
-	def learn(self, data, *settings, **edge_reqs, *ind_reqs, *nonedge_reqs):
+	def learn(self, 
+			data, 
+			names=None,
+			settings=None,
+			edge_reqs=None, 
+			ind_reqs=None, 
+			nonedge_reqs=None, 
+			append=False):
 		"""
 		Main function to run GOBNILP.
 
@@ -649,10 +678,18 @@ class GOBN(object):
 		with one line for each node specifying its parents and
 		the local score for that choice of parents.
 		"""
-		if settings:
+		if settings is not None:
 			self.set_settings(settings)
-		if constraints:
-			self.set_constraints(constraints)
+		if edge_reqs is not None or ind_reqs is not None or nonedge_reqs is not None:
+			self.set_constraints(edge_reqs, ind_reqs, nonedge_reqs)
+
+		if isinstance(data, str):
+			DATA_PATH = data
+		else:
+			DATA_PATH = self.write_data(data, names)
+
+		bin_path = os.path.join(self.GOBN['DIR'], 'bin/gobnilp')
+		learn_cmd = [bin_path, '-g=', self.SETTINGS_FILE, '-f=dat', DATA_PATH]
 
 
 
