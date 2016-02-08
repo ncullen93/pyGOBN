@@ -1,0 +1,22 @@
+# 3 must be a parent of 1
+#1<-3
+#
+# neither 4 nor 5 can be a parent of 2
+~2<-5
+~2<-4
+#
+# 4 and 6 adjacent in the undirected skeleton
+#4-6
+#
+# 2 and 4 not adjacent in the undirected skeleton
+#~4-2
+#
+# must have immorality 4->2<-3
+#4->2<-3
+#
+# no immorality 5->0<-6
+~5->0<-6
+# conditional independence
+0_|_2|3,4
+#next one will only work with the right variable names!
+VisitAsia_|_Dyspnea|Tuberculosis
