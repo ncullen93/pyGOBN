@@ -28,8 +28,8 @@ To unpack/link/make GOBNILP & SCIP for the first time, run the following command
 To set or alter global parameter settings for the GOBNILP solver, use the following function:
 
 	>>> g = GOBN()
-	>>> settings_dict = {'delimiter':'whitespace', 'time':120, alpha:1000}
-	>>> g.set_settings(settings_dict)
+	>>> settings = {'delimiter':'whitespace', 'time':120, alpha:1000}
+	>>> g.set_settings(settings)
 
 To set or alter the learned network constraints for the GOBNILP solver, use the following function:
 
@@ -43,12 +43,12 @@ Additionally, the global parameter settings and constraints can be passed in to 
 along with a numpy ndarray or a pandas dataframe:
 
 	>>> g = GOBN()
-	>>> settings_dict = {'delimiter':'whitespace', 'time':120, 'alpha':1000}
+	>>> settings = {'delimiter':'whitespace', 'time':120, 'alpha':1000}
 	>>> edge_reqs = {'A':['B','C'],'B':['D']} # require that A->B, A->C, and B->D
 	>>> ind_reqs = [('A','D'),(('A','B'),'D','C')] # require that A _|_ D and A,B _|_ D | C
 	>>> nonedge_reqs = {'B':['C']} # disallow that B->C
 	>>> data = np.loadtxt('testfile.txt')
-	>>> g.learn(data, settings_dict, edge_reqs, ind_reqs, nonedge_reqs)
+	>>> g.learn(data, settings, edge_reqs, ind_reqs, nonedge_reqs)
 
 <h2>Pre-Reqs</h2>
 From my understanding, the only necessary requirement for setting up GOBNILP
