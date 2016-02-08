@@ -71,6 +71,7 @@ import os
 import subprocess
 import time
 import sys
+import re
 
 
 
@@ -530,11 +531,30 @@ class GOBN(object):
 
 
 		"""
-		with open('mysettings.txt', 'a') as f:
-			for line in f:
-				for s_name, s_val in settings_dict:
-					if s_name in line:
-						print line
+		# Read mysettings.txt into one big string
+		with open('mysettings.txt', 'r') as f:
+			txt = f.read()
+
+		# For all of the passed-in settings, replace the
+		# existing values in mysettings.txt
+		for s_name, s_val in settings_dict.items():
+			start_idx = txt.find(s_name)
+			if start_idx == -1:
+				print '%s is not a valid setting' % s_name
+			else:
+				temp_sv = txt[start_idx:].rsplit('\n')[0]
+				val_start = start_idx + temp_sv.index('=') + 1
+				val_end = start_idx + len(temp_sv)
+				if '"'  in txt[val_start:val_end]:
+					txt = txt[:val_start+1] + '"' + str(s_val) + '"' + txt[val_end:]
+				else:
+					txt = txt[:val_start+1] + str(s_val) + txt[val_end:]
+
+		# Write the altered text back to mysettings.txt
+		with open('mysettings.txt', 'w') as f:
+			f.write(txt)
+
+		
 
 	def set_constraints(self, cons_dict):
 		"""

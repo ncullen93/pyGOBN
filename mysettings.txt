@@ -1,6 +1,6 @@
 # gobnilp/dagconstraintsfile = "dag.constraints"
 gobnilp/delimiter = "whitespace"
-gobnilp/mergedelimiters = TRUE
+# gobnilp/mergedelimiters = FALSE
 gobnilp/minfounders = 0
 gobnilp/edge_penality = 0
 gobnilp/nbns = 5
