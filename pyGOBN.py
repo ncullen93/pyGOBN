@@ -541,7 +541,7 @@ class GOBN(object):
 
 	### EDGE AND INDEPENDENCE CONSTRAINTS
 
-	def set_constraints(self, **edges, *independencies, *nonedges):
+	def set_constraints(self, **edge_reqs, *ind_reqs, *nonedge_reqs):
 		"""
 		Set constraints/requirements on certain edges,
 		parent-child relationships, or conditional independencies

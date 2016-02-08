@@ -29,20 +29,19 @@ work on their machines.
 <h2>Quick Usage</h2>
 To unpack/link/make the GOBNILP solver, simply run the following commands:
 
-	- change directories to be in 'pyGOBN-master' folder.
+	>>> from pyGOBN import *
+	>>> g = GOBN()
+	>>> g.make()
 
-	- 'from pyGOBN import *'
+To set of alter
 
-	- 'g = GOBN()'
-
-	- 'g.make()'
-
-To set or alter the parameters settings for the GOBNILP solver, use the following function:
+To set or alter the learned network constraints for the GOBNILP solver, use the following function:
 
 	>>> g = GOBN()
-	>>> edge_reqs = {'A':['B','C'],'B':['D']}
-	- ''
-
+	>>> edge_reqs = {'A':['B','C'],'B':['D']} # parent-child edges required to exist in learned network
+	>>> nonedge_reqs = {'B':['C']} # parent-child edges required NOT to exist in learned network
+	>>> ind_reqs = [('A','D'),(('A','B'),'D','C')] # require that A _|_ D and A,B _|_ D | C
+	>>> g.set_constraints(edges=edge_reqs, ind_reqs=ind_reqs, nonedge_reqs=nonedge_reqs)
 
 <h2>Extended Usage</h2>
 
