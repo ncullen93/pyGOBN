@@ -36,7 +36,7 @@ To set or alter the learned network constraints for the GOBNILP solver, use the 
 	>>> edge_reqs = {'A':['B','C'],'B':['D']} # require that A->B, A->C, and B->D
 	>>> ind_reqs = [('A','D'),(('A','B'),'D','C')] # require that A _|_ D and A,B _|_ D | C
 	>>> nonedge_reqs = {'B':['C']} # disallow that B->C
-	>>> g.set_constraints(edge_reqs=edge_reqs, ind_reqs=ind_reqs, nonedge_reqs=nonedge_reqs)
+	>>> g.set_constraints(edge_reqs, ind_reqs, nonedge_reqs)
 
 Additionally, the global parameter settings and constraints can be passed in to the main 'learn' function,
 along with a numpy ndarray or a pandas dataframe:
