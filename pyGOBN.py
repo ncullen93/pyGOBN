@@ -17,38 +17,6 @@ SCIP may be retrieved for ACADEMIC purposes only, and
 therefore this code may only be retrieved as such unless
 the user of this code has a personal/commercial SCIP license.
 
-References
-----------
-[1] Tobias Achterberg, SCIP: solving constraint integer programs,
-Mathematical Programming Computation, v1, n1, pgs 1-41, 2009.
-
-[2] Mark Bartlett and James Cussens. Advances in Bayesian network learning
-using integer programming. In Proceedings of the 29th Conference on
-Uncertainty in Artificial Intelligence (UAI 2013). AUAI Press, 2013. To
-appear.
-
-[3] James Cussens. Bayesian network learning with cutting planes. In Fabio G.
-Cozman and Avi Pfeffer, editors, Proceedings of the 27th Conference on
-Uncertainty in Artificial Intelligence (UAI 2011), pages 153-160. 
-AUAI Press, 2011.
-
-[4] James Cussens, Mark Bartlett, Elinor M. Jones, and Nuala A. Sheehan.
-Maximum likelihood pedigree reconstruction using
-
-[5] Milan Studeny. How matroids occur in the context of learning Bayesian 
-network structure. Proceedings of the 31st Conference on Uncertainty 
-in Artificial Intelligence (UAI-15) July 2015.
-
-[6] James Cussens, David Haws and Milan Studeny. Polyhedral aspects of score 
-equivalence in Bayesian network structure learning. Arkiv 1503.00829, March 2015.
-
-[7] Tommi Jaakkola, David Sontag, Amir Globerson, and Marina Meila. Learning
-Bayesian network structure using LP relaxations. In Proceedings of the
-13th International Conference on Artificial Intelligence and Statistics (AISTATS
-2010), volume 9 of Journal of Machine Learning Research: Workshop
-and Conference Proceedings, pages 358-365. Society for Artificial Intelligence
-and Statistics, 2010.
-
 Acknowledgements from GOBNILP
 -----------------------------
 - GOBNILP version 1.2-1.6 and higher was supported by MRC Project Grant G1002312.
@@ -154,7 +122,7 @@ class GOBN(object):
 
 
 	def __init__(self,
-			GOBN_DIR='gobn/gobnilp1.6.1', 
+			GOBN_DIR='gobnilp/gobnilp1.6.1', 
 			SCIP_DIR='scip/scipoptsuite-3.1.1',
 			GOBN_VERSION='1.6.1',
 			SCIP_VERSION='3.1.1',
@@ -202,7 +170,7 @@ class GOBN(object):
 
 	### MAIN EXECUTION COMMAND ###
 
-	def execute(self, command, _str=None, verbose=None, cwd=None):
+	def execute(self, command, _str=None, verbose=None, cwd=None, learn=False):
 		"""
 		Main function to execute a command from the command line.
 
@@ -227,7 +195,10 @@ class GOBN(object):
 		if verbose is None:
 			verbose = self.VERBOSE
 
-		command = ' '.join(command)
+		if learn:
+			command = ''.join(command)
+		else:
+			command = ' '.join(command)
 		process = subprocess.Popen(command, 
 			shell=True, 
 			stdout=subprocess.PIPE, 
@@ -238,7 +209,7 @@ class GOBN(object):
 			# Print command line output to console while it's happening
 			while True:
 				line = process.stdout.readline()
-				if nextline == '' and process.poll() != None:
+				if line == '' and process.poll() != None:
 					break
 				sys.stdout.write(line)
 				sys.stdout.flush()
@@ -268,7 +239,7 @@ class GOBN(object):
 		self.unpack_GOBN()
 		self.unpack_SCIP()
 
-	def unpack_GOBN(self,_str=None):
+	def unpack_GOBN(self, _str=None):
 		"""
 		Unpack the GOBNILP tar file, which should exist at SELF.GOBN['TAR_FILE']
 
@@ -278,7 +249,11 @@ class GOBN(object):
 
 		This has been validated on my machine.
 		"""
-		dir_proc = subprocess.call(['mkdir', self.GOBN['DIR']])
+		dir_proc = ['mkdir', self.GOBN['DIR']]
+		s,o = self.execute(dir_proc)
+		if not s:
+			print o
+
 		unpack_command = ['tar', '-xzvf', self.GOBN['TAR_FILE'], '-C', self.GOBN['DIR']]
 		successful, output = self.execute(unpack_command,_str=_str)
 		if not successful:
@@ -316,7 +291,7 @@ class GOBN(object):
 	### MAKE SOURCE CODE ###
 
 	def make(self, CPLEX=False, verbose=None):
-		self.make_SCIP(CPLEX=CPLEX verbose=verbose)
+		self.make_SCIP(CPLEX=CPLEX, verbose=verbose)
 		self.make_GOBNILP(CPLEX=CPLEX, verbose=verbose)
 		
 
@@ -355,8 +330,7 @@ class GOBN(object):
 			print output
 			self.SCIP['UNPACKED'] = False
 		else:
-			if verbose:
-				print 'Make SCIP successful'
+			print 'Make SCIP successful'
 			self.SCIP['UNPACKED'] = True
 
 
@@ -423,7 +397,6 @@ class GOBN(object):
 		if successful:
 			print 'GOBNILP Make was Successful. You can now use pyGOBN freely.'
 			self.GOBN['MADE'] = True
-			 = True
 		else:
 			print 'GOBNILP Make was UNSUCCESSFUL for the following reason: \n'
 			print output
@@ -434,8 +407,14 @@ class GOBN(object):
 		"""
 		Remove/Delete the main SCIP and GOBNILP directories.
 		"""
-		gobn_proc = subprocess.call(['rm', '-r', self.GOBN['DIR']])
-		scip_proc = subprocess.call(['rm', '-r', self.SCIP['DIR']])
+		gobn_proc = ['rm', '-r', self.GOBN['DIR']]
+		s,o = self.execute(gobn_proc)
+		if not s:
+			print o
+		scip_proc = ['rm', '-r', self.SCIP['DIR']]
+		s,o = self.execute(scip_proc)
+		if not s:
+			print o
 
 
 	################################
@@ -524,13 +503,14 @@ class GOBN(object):
 		with open(self.SETTINGS_FILE, 'r') as f:
 			txt = f.read()
 
-		# For all of the passed-in settings, replace the
-		# existing values in mysettings.txt
+		# For all of the passed-in settings:
+		# 	If the setting is found in mysettings.txt then
+		# 			replace the existing value with the passed-in value
 		for s_name, s_val in settings.items():
 			start_idx = txt.find(s_name)
-			if start_idx == -1:
+			if start_idx == -1: # SETTING NOT FOUND
 				print '%s is not a valid setting.. Moving on.' % s_name
-			else:
+			else: # SETTING WAS FOUND
 				temp_sv = txt[start_idx:].rsplit('\n')[0]
 				val_start = start_idx + temp_sv.index('=') + 1
 				val_end = start_idx + len(temp_sv)
@@ -654,9 +634,14 @@ class GOBN(object):
 			edge_reqs=None, 
 			ind_reqs=None, 
 			nonedge_reqs=None, 
-			append=False):
+			append=False,
+			verbose=True):
 		"""
 		Main function to run GOBNILP.
+
+		NOTE: The constraints file is linked inside the settings file by
+		specifying the path to the constraints file with 'gobnilp/dagconstraintsfile'
+		parameter.
 
 		Score Metric
 		------------
@@ -692,9 +677,9 @@ class GOBN(object):
 			DATA_PATH = self.write_data(data, names)
 
 		bin_path = os.path.join(self.GOBN['DIR'], 'bin/gobnilp')
-		learn_cmd = [bin_path, '-g=', self.SETTINGS_FILE, '-f=dat', DATA_PATH]
+		learn_cmd = [bin_path, ' -g=', self.SETTINGS_FILE, ' -f=dat ', DATA_PATH]
 		_str = 'Running GOBNILP Solver.. This may take a few minutes.'
-		successful, output = self.execute(learn_cmd, _str=_str)
+		successful, output = self.execute(learn_cmd, _str=_str, verbose=verbose, learn=True)
 
 		if successful:
 			print 'Solver run was SUCCESSFUL'

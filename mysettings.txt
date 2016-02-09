@@ -1,23 +1,23 @@
-# gobnilp/dagconstraintsfile = "dag.constraints"
+# gobnilp/dagconstraintsfile = "myconstraints.txt"
 gobnilp/delimiter = "whitespace"
-# gobnilp/mergedelimiters = FALSE
-gobnilp/minfounders = 0
-gobnilp/edge_penality = 0
-gobnilp/nbns = 5
+gobnilp/mergedelimiters = TRUE
+#gobnilp/minfounders = 0
+#gobnilp/edge_penalty = 0
+#gobnilp/nbns = 5
 #
-gobnilp/outputfile/solution = "out.sol"
-gobnilp/outputfile/adjacencymatrix = "out.mat"
+gobnilp/outputfile/solution = "gobnilp/solutions/out.sol"
+gobnilp/outputfile/adjacencymatrix = "gobnilp/solutions/out.mat"
 # gobnilp/outputfile/dot = "out.dot"
 # gobnilp/outputfile/scoreandtime = "out.scoretime"
 # gobnilp/outputfile/mec = "out.mec"
 # gobnilp/outputfile/pedigree = "out.pedigree"
 #
 gobnilp/scoring/alpha = 1
-gobnilp/scoring/arities = FALSE
-gobnilp/scoring/names = FALSE
-gobnilp/scoring/palim = 5
-gobnilp/scoring/prune = FALSE
-gobnilp/scoring/fast = FALSE
+gobnilp/scoring/arities = TRUE
+gobnilp/scoring/names = TRUE
+#gobnilp/scoring/palim = 5
+#gobnilp/scoring/prune = FALSE
+#gobnilp/scoring/fast = FALSE
 # 
 # heuristics/sinks/probing = FALSE
 # heuristics/sinks/maxdivedepth = -1
