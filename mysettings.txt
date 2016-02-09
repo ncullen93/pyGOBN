@@ -5,10 +5,12 @@ gobnilp/mergedelimiters = TRUE
 #gobnilp/edge_penalty = 0
 #gobnilp/nbns = 5
 #
+limits/time = 10
+# limits/gap = 1
 gobnilp/outputfile/solution = "gobnilp/solutions/out.sol"
 gobnilp/outputfile/adjacencymatrix = "gobnilp/solutions/out.mat"
 # gobnilp/outputfile/dot = "out.dot"
-# gobnilp/outputfile/scoreandtime = "out.scoretime"
+# gobnilp/outputfile/scoreandtime = "220"
 # gobnilp/outputfile/mec = "out.mec"
 # gobnilp/outputfile/pedigree = "out.pedigree"
 #
@@ -22,5 +24,3 @@ gobnilp/scoring/names = TRUE
 # heuristics/sinks/probing = FALSE
 # heuristics/sinks/maxdivedepth = -1
 #
-limits/time = 120
-# limits/gap = 1

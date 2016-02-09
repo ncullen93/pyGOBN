@@ -51,7 +51,11 @@ along with a numpy ndarray or a pandas dataframe:
 	>>> gobn.learn(data, settings, edge_reqs, ind_reqs, nonedge_reqs)
 
 <h2>Example</h2>
-![alt tag](https://cloud.githubusercontent.com/assets/13004360/12933453/1c728b06-cf56-11e5-8a5e-deeaaa0035ab.png)
+Here is a real example of running pyGOBN from the IPython shell. Here, the 'gobnilp' and 'scip' source code is
+already set up on my local machine, so I can simply set the parameter settings - walltime equal to 10 seconds - and
+then learn the Bayesian network from the data file.
+
+![alt tag](https://cloud.githubusercontent.com/assets/13004360/12934044/b6246e24-cf59-11e5-8e3f-73f467f18469.png)
 
 <h2>Pre-Reqs</h2>
 From my understanding, the only necessary requirement for setting up GOBNILP
