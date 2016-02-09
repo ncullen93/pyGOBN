@@ -1,14 +1,13 @@
 # pyGOBN
 
 <h2>Overview</h2>
-This is a project to create Python bindings for the GOBNILP solver
-for Global Optimization of Bayesian Network structure learning. The purpose
-of this repository is to encourage and allow easy integration of GOBNILP into
-existing Python libraries focused on Bayesian networks. The first
+This is a project to create a Python wrapper for the GOBNILP solver - the
+Global Optimization of Bayesian Network structure learning through Integer
+Linear Programming. The purpose of the pyGOBN project is to facilitate easy integration 
+of the GOBNILP solver into existing Python libraries focused on Bayesian networks. The first
 example of such integration is found in "neuroBN" -- github.com/ncullen93/neuroBN.
 
-This work is not affiliated with GOBNILP or SCIP. Still, all credit for the real
-code behind this project goes to Dr. James Cussens and Dr. Mark Bartlett 
+All credit for the real code behind this project goes to Dr. James Cussens and Dr. Mark Bartlett 
 for the creation of GOBNILP, and to the creators of SCIP. Please contact me - Nick Cullen - at
 ncullen.th@dartmouth.edu with any comments or concerns.
 
@@ -27,6 +26,10 @@ the 'make()' function ONE TIME in the entire lifetime of using pyGOBN. Here is t
 	>>> from pyGOBN import *
 	>>> gobn = GOBN()
 	>>> gobn.make()
+
+If any errors happen, they will be printed to the IPython console exactly as if you were on the real terminal.
+However, if you want to get a more detailed view of every step of the installation process, simply pass in
+the argument 'verbose=True' to the 'make()' function.
 
 If you already have GOBNILP set up on your local machine, but in a different directory than the pre-packaged
 version, pass in the path to that directory and you're good to go! The path should be of the form
