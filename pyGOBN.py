@@ -316,11 +316,11 @@ class GOBN(object):
 	### MAKE SOURCE CODE ###
 
 	def make(self, CPLEX=False, verbose=None):
-		self.make_SCIP(verbose=verbose)
-		self.make_GOBNILP(CPLEX, verbose=verbose)
+		self.make_SCIP(CPLEX=CPLEX verbose=verbose)
+		self.make_GOBNILP(CPLEX=CPLEX, verbose=verbose)
 		
 
-	def make_SCIP(self, test=False, verbose=None, from_gobn=False):
+	def make_SCIP(self, CPLEX=False, test=False, verbose=None, from_gobn=False):
 		"""
 		Steps:
 			1. Unpack SCIP if necessary
@@ -344,7 +344,10 @@ class GOBN(object):
 			_str = 'Making SCIP.. This may take a few minutes.\n'
 		
 		### EXECUTE MAKE COMMAND ###
-		make_command = ['make', '-C', self.SCIP['DIR']]
+		if CPLEX:
+			make_command = ['make', 'LPS=cpx', '-C', self.SCIP['DIR']]
+		else:
+			make_command = ['make', '-C', self.SCIP['DIR']]
 		successful, output = self.execute(make_command, _str=_str, verbose=verbose)
 		
 		if not successful:
