@@ -50,6 +50,9 @@ along with a numpy ndarray or a pandas dataframe:
 	>>> data = np.loadtxt('testfile.txt')
 	>>> gobn.learn(data, settings, edge_reqs, ind_reqs, nonedge_reqs)
 
+<h2>Example</h2>
+https://cloud.githubusercontent.com/assets/13004360/12933453/1c728b06-cf56-11e5-8a5e-deeaaa0035ab.png
+
 <h2>Pre-Reqs</h2>
 From my understanding, the only necessary requirement for setting up GOBNILP
 is access to the 'make' command (i.e. a compiler). This code was written for a Mac, 
