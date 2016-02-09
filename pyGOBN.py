@@ -630,11 +630,6 @@ class GOBN(object):
 	def learn(self, 
 			data, 
 			names=None,
-			settings=None,
-			edge_reqs=None, 
-			ind_reqs=None, 
-			nonedge_reqs=None, 
-			append=False,
 			verbose=True):
 		"""
 		Main function to run GOBNILP.
@@ -666,10 +661,6 @@ class GOBN(object):
 		with one line for each node specifying its parents and
 		the local score for that choice of parents.
 		"""
-		if settings is not None:
-			self.set_settings(settings)
-		if edge_reqs is not None or ind_reqs is not None or nonedge_reqs is not None:
-			self.set_constraints(edge_reqs, ind_reqs, nonedge_reqs)
 
 		if isinstance(data, str):
 			DATA_PATH = data

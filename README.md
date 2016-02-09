@@ -19,27 +19,32 @@ Here are the links to GOBNILP and SCIP:
 	- http://scip.zib.de/#scipoptsuite
 
 <h2>Usage</h2>
-To unpack/link/make GOBNILP & SCIP for the first time, run the following commands:
+The pyGOBN project comes pre-packed with the tar files for both the GOBNILP and SCIP projects. Therefore, there
+is absolutely no need to download anything except this package. You do, however, have to actually 
+unpack, link, and make GOBNILP & SCIP when using pyGOBN for the first time. Note that you only have to call
+the 'make()' function ONE TIME in the entire lifetime of using pyGOBN. Here is the command:
 
 	>>> from pyGOBN import *
 	>>> gobn = GOBN()
 	>>> gobn.make()
 
-What if you already have GOBNILP and SCIP installed and set up on your local machine, so 
-all you want to do is use the solver from Python? Easy, just pass in the paths to those directories.
-The directories should be of the form '.../gobnilp1.6.1' and '.../scipoptsuite-3.1.1', or whichever
-version of each you happen to be using. After that, you're good to go!
+If you already have GOBNILP set up on your local machine, but in a different directory than the pre-packaged
+version, pass in the path to that directory and you're good to go! The path should be of the form
+'.../gobnilp-1.6.1' - or whichever version you're using. Here is an example:
 
 	>>> from pyGOBN import *
-	>>> gobn = GOBN(GOBN_DIR='/users/nick/desktop/gobnilp1.6.1',SCIP_DIR='/users/nick/desktop/scipoptsuite-3.1.1')
+	>>> gobn = GOBN(GOBN_DIR='/users/nick/desktop/gobnilp1.6.1')
 
-To set or alter global parameter settings for the GOBNILP solver, use the following function:
+Setting and altering global parameter settings for the GOBNILP solver is made simple in pyGOBN - 
+create a settings dictionary and call the 'set_settings()' function on your GOBN object. Here's an example:
 
 	>>> gobn = GOBN()
 	>>> settings = {'delimiter':'whitespace', 'time':120, alpha:1000}
 	>>> gobn.set_settings(settings)
 
-To set or alter the learned network constraints for the GOBNILP solver, use the following function:
+For more refined structure learning, you may want to add network constraints for the GOBNILP solver. Through the
+'set_constraints()' method, pyGOBN supports constraints for required edges, disallowed edges, and (conditional) independencies 
+between random variables that will be satisfied in the learned network. The following examples highlights this functionality:
 
 	>>> gobn = GOBN()
 	>>> edge_reqs = {'A':['B','C'],'B':['D']} # require that A->B, A->C, and B->D
@@ -47,16 +52,18 @@ To set or alter the learned network constraints for the GOBNILP solver, use the 
 	>>> nonedge_reqs = {'B':['C']} # disallow that B->C
 	>>> gobn.set_constraints(edge_reqs, ind_reqs, nonedge_reqs)
 
-Additionally, the global parameter settings and constraints can be passed in to the main 'learn' function,
-along with a numpy ndarray or a pandas dataframe:
-
-	>>> gobn = GOBN()
-	>>> settings = {'delimiter':'whitespace', 'time':120, 'alpha':1000}
+Finally, the purpose of GOBNILP is of course to actually learn Bayesian network structures from data. For that,
+pyGOBN implements the 'learn()' method, which supports learning from 1) a file path to the data, 2) a numpy array, and
+3) a pandas dataframe. Here is what a short-but-complete pyGOBN session might look like:
+	
+	>>> from pyGOBN import *
+	>>> gobn = GOBN() # Create a GOBN object
+	>>> settings = {'delimiter':'whitespace', 'time':120, alpha:1000}
+	>>> gobn.set_settings(settings) # Parameter Settings
 	>>> edge_reqs = {'A':['B','C'],'B':['D']} # require that A->B, A->C, and B->D
-	>>> ind_reqs = [('A','D'),(('A','B'),'D','C')] # require that A _|_ D and A,B _|_ D | C
-	>>> nonedge_reqs = {'B':['C']} # disallow that B->C
-	>>> data = np.loadtxt('testfile.txt')
-	>>> gobn.learn(data, settings, edge_reqs, ind_reqs, nonedge_reqs)
+	>>> gobn.set_constraints(edge_reqs=edge_reqs) # Constraints
+	>>> data = np.loadtxt('testdata.txt')
+	>>> gobn.learn(data) # Call the GOBNILP solver
 
 <h2>Example</h2>
 Here is a real example of running pyGOBN from the IPython shell. Here, the 'gobnilp' and 'scip' projects are
