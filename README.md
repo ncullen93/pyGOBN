@@ -20,8 +20,7 @@ Here are the links to GOBNILP and SCIP:
 <h2>Usage</h2>
 The pyGOBN project comes pre-packed with the tar files for both the GOBNILP and SCIP projects. Therefore, there
 is absolutely no need to download anything except this package. You do, however, have to actually 
-unpack, link, and make GOBNILP & SCIP when using pyGOBN for the first time. Note that you only have to call
-the 'make()' function ONE TIME in the entire lifetime of using pyGOBN. Here is the command:
+unpack, link, and make GOBNILP & SCIP when using pyGOBN for the first time. Here is the command:
 
 	>>> from pyGOBN import *
 	>>> gobn = GOBN()
@@ -29,25 +28,41 @@ the 'make()' function ONE TIME in the entire lifetime of using pyGOBN. Here is t
 
 If any errors happen, they will be printed to the IPython console exactly as if you were on the real terminal.
 However, if you want to get a more detailed view of every step of the installation process, simply pass in
-the argument 'verbose=True' to the 'make()' function.
-
-If you already have GOBNILP set up on your local machine, but in a different directory than the pre-packaged
-version, pass in the path to that directory and you're good to go! The path should be of the form
-'.../gobnilp-1.6.1' - or whichever version you're using. Here is an example:
+the argument 'verbose=True' to the 'make()' function. Additionally, you can choose to perform each installation
+command seperately, although there is no real benefit to doing so:
 
 	>>> from pyGOBN import *
-	>>> gobn = GOBN(GOBN_DIR='/users/nick/desktop/gobnilp1.6.1')
+	>>> gobn = GOBN()
+	>>> gobn.unpack_SCIP() # unpack SCIP tar file
+	>>> gobn.unpack_GOBN() # unpack GOBNILP tar file
+	>>> gobn.make_SCIP(verbose=True) # make SCIP with verbose output
+	>>> gobn.make_GOBN(verbose=True) # make GOBNILP with verbose output
+
+Note that once you successfully 'make' the GOBNILP source code in the local pyGOBN directory system for the
+first time, you do NOT have to call the 'make()' command ever again. If you want to use pyGOBN again, simply import 
+the library and create a GOBN object:
+	
+	>>> from pyGOBN import *
+	>>> gobn = GOBN()
+
+If you already have GOBNILP set up on your local machine, but in a different directory than the pre-packaged
+version, all you have to do is pass in the path to the GOBNILP directory when creating a GOBN object.
+The path should be of the form '.../gobnilp-1.6.1' - or whichever version you're using. Here is an example:
+
+	>>> from pyGOBN import *
+	>>> gobn = GOBN(GOBN_DIR='/users/nick/desktop/random_folder/gobnilp1.6.1')
 
 Setting and altering global parameter settings for the GOBNILP solver is made simple in pyGOBN - 
-create a settings dictionary and call the 'set_settings()' function on your GOBN object. Here's an example:
+create a settings dictionary and call the 'set_settings()' function on your GOBN object. Any unrecognized
+command will be passed over, but you can always directly alter the 'mysettings.txt' file in the main pyGOBN
+directory without calling any Python commands.
 
 	>>> gobn = GOBN()
 	>>> settings = {'delimiter':'whitespace', 'time':120, alpha:1000}
 	>>> gobn.set_settings(settings)
 
 For more refined structure learning, you may want to add network constraints for the GOBNILP solver. Through the
-'set_constraints()' method, pyGOBN supports constraints for required edges, disallowed edges, and (conditional) independencies 
-between random variables that will be satisfied in the learned network. The following examples highlights this functionality:
+'set_constraints()' method, pyGOBN supports constraints for 1) required edges, 2) disallowed edges, and 3) (conditional) independencies between random variables - all of which will be satisfied in the learned network. As with the settings file, manually changing of the 'myconstraints.txt' file is completely acceptable. See the following example:
 
 	>>> gobn = GOBN()
 	>>> edge_reqs = {'A':['B','C'],'B':['D']} # require that A->B, A->C, and B->D
