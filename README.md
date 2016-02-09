@@ -25,6 +25,14 @@ To unpack/link/make GOBNILP & SCIP for the first time, run the following command
 	>>> gobn = GOBN()
 	>>> gobn.make()
 
+What if you already have GOBNILP and SCIP installed and set up on your local machine, so 
+all you want to do is use the solver from Python? Easy, just pass in the paths to those directories.
+The directories should be of the form '.../gobnilp1.6.1' and '.../scipoptsuite-3.1.1', or whichever
+version of each you happen to be using. After that, you're good to go!
+
+	>>> from pyGOBN import *
+	>>> gobn = GOBN(GOBN_DIR='/users/nick/desktop/gobnilp1.6.1',SCIP_DIR='/users/nick/desktop/scipoptsuite-3.1.1')
+
 To set or alter global parameter settings for the GOBNILP solver, use the following function:
 
 	>>> gobn = GOBN()
@@ -51,8 +59,8 @@ along with a numpy ndarray or a pandas dataframe:
 	>>> gobn.learn(data, settings, edge_reqs, ind_reqs, nonedge_reqs)
 
 <h2>Example</h2>
-Here is a real example of running pyGOBN from the IPython shell. Here, the 'gobnilp' and 'scip' source code is
-already set up on my local machine, so I can simply set the parameter settings - walltime equal to 10 seconds - and
+Here is a real example of running pyGOBN from the IPython shell. Here, the 'gobnilp' and 'scip' projects are
+already installed on my local machine, so I can simply set the parameter settings - walltime equal to 10 seconds - and
 then learn the Bayesian network from the data file.
 
 ![alt tag](https://cloud.githubusercontent.com/assets/13004360/12934044/b6246e24-cf59-11e5-8e3f-73f467f18469.png)
@@ -66,7 +74,7 @@ that command as well. It's quite likely that this code will only work on Mac OS
 and probably Linux at the moment. If any Windows users come across any issues, please
 let me know at ncullen.th@dartmouth.edu and i'll fix it!
 
-<h2>Reference</h2>
+<h2>References</h2>
 [1] Tobias Achterberg, SCIP: solving constraint integer programs,
 Mathematical Programming Computation, v1, n1, pgs 1-41, 2009.
 
