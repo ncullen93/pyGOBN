@@ -10,8 +10,9 @@ All credit for the real code behind this project goes to Dr. James Cussens and D
 for the creation of GOBNILP, and to the creators of SCIP. Please contact me - Nick Cullen - at
 ncullen.th@dartmouth.edu with any comments or concerns.
 
-Here is the link to GOBNILP: <https://www.cs.york.ac.uk/aig/sw/gobnilp/>. Here is the link to SCIP:
-<http://scip.zib.de/#scipoptsuite>.
+Here is the link to GOBNILP: <https://www.cs.york.ac.uk/aig/sw/gobnilp/>.
+
+Here is the link to SCIP: <http://scip.zib.de/#scipoptsuite>.
 
 <h2>Usage</h2>
 The pyGOBN project comes pre-packed with the tar files of both the GOBNILP and SCIP source code. There is no need to download anything except this package. However, unless you are using your own already-built GOBNILP source code, you do have to actually unpack, link, and make GOBNILP & SCIP when using pyGOBN for the first time. Luckily, all this can be done directly 
