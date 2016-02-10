@@ -7,7 +7,7 @@ of the GOBNILP solver into existing Python libraries focused on Bayesian network
 
 All credit for the real code behind this project goes to Dr. James Cussens and Dr. Mark Bartlett 
 for the creation of GOBNILP, and to the creators of SCIP. Please contact me - Nick Cullen - at
-ncullen.th@dartmouth.edu with any comments or concerns.
+ncullen.th@dartmouth.edu with any comments or issues.
 
 Here is the link to GOBNILP: <https://www.cs.york.ac.uk/aig/sw/gobnilp/>.
 
