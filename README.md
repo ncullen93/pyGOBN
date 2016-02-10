@@ -82,7 +82,13 @@ pyGOBN implements the 'learn()' method, which supports learning from 1) a file p
 	>>> data = np.loadtxt('testdata.txt')
 	>>> gobn.learn(data) # Call the GOBNILP solver
 
-<h2>Example</h2>
+<h2>Examples</h2>
+Here is a real example of installing pyGOBN for the first time from the IPython shell. You can clearly
+see the status updates, although calling 'make()' with 'verbose=True' as an argument would print out
+significantly more information.
+
+![alt tag](https://cloud.githubusercontent.com/assets/13004360/12935072/3921e30e-cf61-11e5-8c1e-e98f0dba52ff.png)
+
 Here is a real example of running pyGOBN from the IPython shell. In this example, the GOBNILP source code has
 already been installed on my local machine, so I can simply set the parameter settings - walltime equal to 10 seconds - and
 then learn the Bayesian network from the data file. This shows the type of output you can expect, although the
