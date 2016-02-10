@@ -1,7 +1,7 @@
 # pyGOBN
 
 <h2>Overview</h2>
-This is a project to create a Python wrapper for the GOBNILP solver - the
+This is a project to create a Python wrapper for the GOBNILP solver -
 Global Optimization of Bayesian Network structure learning through Integer
 Linear Programming. The purpose of the pyGOBN project is to facilitate easy integration 
 of the GOBNILP solver into existing Python libraries focused on Bayesian networks. The first
