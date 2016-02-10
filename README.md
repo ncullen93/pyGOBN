@@ -4,7 +4,7 @@
 This is a project to create a Python wrapper for the GOBNILP solver for exact Bayesian network
 structure learning through Integer Linear Programming. The purpose of the pyGOBN project is to facilitate easy integration 
 of the GOBNILP solver into existing Python libraries focused on Bayesian networks. The first
-example of such integration is found in "neuroBN" -- [neuroBN]: <https://github.com/ncullen93/neuroBN>.
+example of such integration is found in "neuroBN" -- <https://github.com/ncullen93/neuroBN>.
 
 All credit for the real code behind this project goes to Dr. James Cussens and Dr. Mark Bartlett 
 for the creation of GOBNILP, and to the creators of SCIP. Please contact me - Nick Cullen - at
@@ -12,9 +12,9 @@ ncullen.th@dartmouth.edu with any comments or concerns.
 
 Here are the links to GOBNILP and SCIP:
 
-	- https://www.cs.york.ac.uk/aig/sw/gobnilp/
+	- <https://www.cs.york.ac.uk/aig/sw/gobnilp/>
 
-	- http://scip.zib.de/#scipoptsuite
+	- <http://scip.zib.de/#scipoptsuite>
 
 <h2>Usage</h2>
 The pyGOBN project comes pre-packed with the tar files of both the GOBNILP and SCIP source code. There is no need to download anything except this package. However, unless you are using your own already-built GOBNILP source code, you do have to actually unpack, link, and make GOBNILP & SCIP when using pyGOBN for the first time. Luckily, all this can be done directly 
