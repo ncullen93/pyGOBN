@@ -12,7 +12,7 @@ ncullen.th@dartmouth.edu with any comments or concerns.
 
 Here are the links to GOBNILP and SCIP:
 
-	- https://www.cs.york.ac.uk/aig/sw/gobnilp/
+	- [link] https://www.cs.york.ac.uk/aig/sw/gobnilp/
 
 	- http://scip.zib.de/#scipoptsuite
 
