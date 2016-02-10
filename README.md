@@ -18,9 +18,8 @@ Here are the links to GOBNILP and SCIP:
 	- http://scip.zib.de/#scipoptsuite
 
 <h2>Usage</h2>
-The pyGOBN project comes pre-packed with the tar files of both the GOBNILP and SCIP source code. Therefore, there
-is absolutely no need to download anything except this package. You do, however, have to actually 
-unpack, link, and make GOBNILP & SCIP when using pyGOBN for the first time. Here is the command:
+The pyGOBN project comes pre-packed with the tar files of both the GOBNILP and SCIP source code. There is no need to download anything except this package. However, unless you are using your own already-built GOBNILP source code, you do have to actually unpack, link, and make GOBNILP & SCIP when using pyGOBN for the first time. Luckily, all this can be done from pyGOBN
+with a single command:
 
 	>>> from pyGOBN import *
 	>>> gobn = GOBN()
