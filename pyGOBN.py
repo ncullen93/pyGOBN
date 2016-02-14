@@ -430,6 +430,10 @@ class GOBN(object):
 	def clean(self):
 		"""
 		Remove/Delete the main SCIP and GOBNILP directories.
+
+		Arguments
+		---------
+		None
 		"""
 		gobn_proc = ['rm', '-r', self.GOBN['DIR']]
 		s,o = self.execute(gobn_proc)
@@ -563,14 +567,14 @@ class GOBN(object):
 
 		Arguments
 		---------
-		*edges* : a dictionary,
+		*edge_reqs* : a dictionary,
 			where key = main rv and value = list of rvs which are REQUIRED
 			to be the main rv's children.
 			Examples:
 				edges = {'C':['A','B']} means that there MUST be edges from
 					C -> A and from C -> B in the learned network.
 
-		*independencies* : a list of 2-tuples or 3-tuples,
+		*ind_reqs* : a list of 2-tuples or 3-tuples,
 			where each tuple element can be another tuple representing a 
 			set of random variables.
 			Examples:
@@ -579,7 +583,7 @@ class GOBN(object):
 				- ('A','B','C') means that A _|_ B | C
 				- ('B', 'C') means that B _|_ C
 
-		*nonedges* : a dictionary,
+		*nonedge_reqs* : a dictionary,
 			the same format as *edges*, except the interpretation is that
 			the rv is NOT a parent of any of the rvs in the list.
 			Examples:
@@ -624,19 +628,27 @@ class GOBN(object):
 
 		f.close()
 
-	def write_data(self, data, names=None):
+	def write_data(self, data, header=None):
 		"""
 		Write data to file in order to be read by GOBNILP solver, and
 		return the path to which the passed-in data file was written.
 
 		This function should support numpy ndarray and pandas dataframe.
+
+		Arguments
+		---------
+		*data* : a numpy ndarray or pandas dataframe
+			The dataset to write to file
+
+		*header* : a list of strings
+			The header of the data if it's not included.
 		"""
 		settings = {'delimiter': ','}
 		data_path = os.path.join(self.DATA_DIR, 'userdata.dat')
 
 		if isinstance(data, np.ndarray):
-			if names is not None:
-				np.savetxt(data_path, data, sep=',', header=names)
+			if header is not None:
+				np.savetxt(data_path, data, sep=',', header=header)
 				settings['names'] = 'TRUE'
 			else:
 				np.savetxt(data_path, data)
@@ -684,6 +696,10 @@ class GOBN(object):
 		By default, GOBNILP prints out the learned BN structure
 		with one line for each node specifying its parents and
 		the local score for that choice of parents.
+
+		Arguments
+		---------
+		*data* : a string (data path file) or dataset itself.
 		"""
 
 		if isinstance(data, str):
