@@ -235,6 +235,11 @@ class GOBN(object):
 		See the docs of the associated functions.
 
 		This has been validated on my machine.
+
+		Arguments
+		---------
+		None
+
 		"""
 		self.unpack_GOBN()
 		self.unpack_SCIP()
@@ -248,6 +253,11 @@ class GOBN(object):
 		be unpacked.
 
 		This has been validated on my machine.
+
+		Arguments
+		---------
+		*_str* : a string
+			The sting to print to the console while running the function
 		"""
 		dir_proc = ['mkdir', self.GOBN['DIR']]
 		s,o = self.execute(dir_proc)
@@ -276,6 +286,11 @@ class GOBN(object):
 		directory must be MADE for it. That is not the case here.
 
 		This has been validated on my machine.
+
+		Arguments
+		---------
+		*_str* : a string
+			The sting to print to the console while running the function
 		"""
 		unpack_command = ['tar', '-xzvf', self.SCIP['TAR_FILE'], '-C', 'scip']
 		successful, output = self.execute(unpack_command,_str=_str)
@@ -291,6 +306,15 @@ class GOBN(object):
 	### MAKE SOURCE CODE ###
 
 	def make(self, CPLEX=False, verbose=None):
+		"""
+		Arguments
+		---------
+		*CPLEX* : a boolean
+			Whether to make with CPLEX linked
+
+		*verbose* : a boolean
+			Whether to have verbose output
+		"""
 		self.make_SCIP(CPLEX=CPLEX, verbose=verbose)
 		self.make_GOBNILP(CPLEX=CPLEX, verbose=verbose)
 		
