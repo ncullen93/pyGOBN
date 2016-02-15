@@ -700,6 +700,14 @@ class GOBN(object):
 		Arguments
 		---------
 		*data* : a string (data path file) or dataset itself.
+
+		*header* : a list of strings (Optional)
+			The header of the data file if it's not included.
+
+		*verbose* : a boolean
+			Whether to have verbose output or not.
+
+		
 		"""
 
 		if isinstance(data, str):
