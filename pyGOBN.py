@@ -397,15 +397,15 @@ class GOBN(object):
 		successful, output = self.execute(config_command, _str=_str, cwd=self.GOBN['DIR'])
 		if 'SUCCEEDED' in output:
 			print 'SCIP Linking was successful.'
-			subprocess.call(['cd' , '../../']) # change back to main dir
+			#subprocess.call(['cd' , '../../']) # change back to main dir
 		elif 'exists' in output:
 			print 'SCIP already Linked to GOBNILP.. Moving on.'
-			subprocess.call(['cd' , '../../']) # change back to main dir
+			#subprocess.call(['cd' , '../../']) # change back to main dir
 		else:
 			print 'SCIP Linking was unsuccessful for the following reason: \n'
 			print output
 			print '\n EXITING WITHOUT MAKING GOBNILP.\n'
-			subprocess.call(['cd' , '../../']) # change back to main dir
+			#subprocess.call(['cd' , '../../']) # change back to main dir
 			return None
 
 		### MAKE GOBNILP ###
