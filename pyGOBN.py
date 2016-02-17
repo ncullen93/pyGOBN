@@ -7,7 +7,6 @@ code will be automatically compiled, error handling can be
 done automatically at all steps of the process, and most importantly,
 GOBNILP functionality can now be included in any Python library.
 
-
 Please note that this re-distribution of GOBNILP is
 done under the GNU Public License - ALL credit for that
 solver goes to its creators Dr. James Cussens and 
@@ -199,6 +198,7 @@ class GOBN(object):
 			command = ''.join(command)
 		else:
 			command = ' '.join(command)
+		
 		process = subprocess.Popen(command, 
 			shell=True, 
 			stdout=subprocess.PIPE, 
