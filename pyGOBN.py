@@ -14,7 +14,9 @@ Dr. Mark Bartlett.
 
 SCIP may be retrieved for ACADEMIC purposes only, and
 therefore this code may only be retrieved as such unless
-the user of this code has a personal/commercial SCIP license.
+the user of this code has a personal/commercial SCIP license. 
+However, because of its licensing terms it must be downloaded from
+the official site - we cannot include it.
 
 Acknowledgements from GOBNILP
 -----------------------------
