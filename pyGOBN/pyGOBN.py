@@ -123,8 +123,8 @@ class GOBN(object):
 
 
 	def __init__(self,
-			GOBN_DIR='../gobnilp/gobnilp1.6.1', 
-			SCIP_DIR='../scip/scipoptsuite-3.1.1',
+			GOBN_DIR='gobnilp/gobnilp1.6.1', 
+			SCIP_DIR='scip/scipoptsuite-3.1.1',
 			GOBN_VERSION='1.6.1',
 			SCIP_VERSION='3.1.1',
 			SETTINGS_FILE='mysettings.txt', 
@@ -149,7 +149,7 @@ class GOBN(object):
 		"""
 		self.GOBN = {
 				'DIR': GOBN_DIR, # main GOBNILP directory
-				'TAR_FILE' : '../gobnilp/gobnilp%s.tar.gz' % GOBN_VERSION,
+				'TAR_FILE' : os.path.join(GOBN_DIR,'gobnilp%s.tar.gz' % GOBN_VERSION),
 				'UNPACKED' : False,
 				'MADE' : False}
 
@@ -157,7 +157,7 @@ class GOBN(object):
 				'DIR' : SCIP_DIR, # main SCIPOPTSUITE directory
 				'SCIP_DIR' : os.path.join(SCIP_DIR, SCIP_VERSION),
 				#'SCIP_DIR' : '../scip/scipoptsuite-3.1.1/scip-3.1.1', # main SCIP dir
-				'TAR_FILE' : '../scip/scipoptsuite-%s.tgz' % SCIP_VERSION,
+				'TAR_FILE' : os.path.jo'scip/scipoptsuite-%s.tgz' % SCIP_VERSION,
 				'UNPACKED' : False,
 				'MADE' : False}
 
