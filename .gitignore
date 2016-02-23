@@ -2,3 +2,14 @@
 *.pyc
 gobnilp/gobnilp1.6.1/
 scip/scipoptsuite-3.1.1/
+
+# setup.py working directory
+build
+# sphinx build directory
+doc/_build
+# setup.py dist directory
+dist
+# Egg metadata
+*.egg-info
+.eggs
+pyGOBN.egg-info
