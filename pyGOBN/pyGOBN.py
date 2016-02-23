@@ -123,8 +123,8 @@ class GOBN(object):
 
 
 	def __init__(self,
-			GOBN_DIR='gobnilp/gobnilp1.6.1', 
-			SCIP_DIR='scip/scipoptsuite-3.1.1',
+			GOBN_DIR='../gobnilp/gobnilp1.6.1', 
+			SCIP_DIR='../scip/scipoptsuite-3.1.1',
 			GOBN_VERSION='1.6.1',
 			SCIP_VERSION='3.1.1',
 			SETTINGS_FILE='mysettings.txt', 
@@ -149,21 +149,22 @@ class GOBN(object):
 		"""
 		self.GOBN = {
 				'DIR': GOBN_DIR, # main GOBNILP directory
-				'TAR_FILE' : 'gobnilp/gobnilp1.6.1.tar.gz',
+				'TAR_FILE' : '../gobnilp/gobnilp%s.tar.gz' % GOBN_VERSION,
 				'UNPACKED' : False,
 				'MADE' : False}
 
 		self.SCIP = {
 				'DIR' : SCIP_DIR, # main SCIPOPTSUITE directory
-				'SCIP_DIR' : 'scip/scipoptsuite-3.1.1/scip-3.1.1', # main SCIP dir
-				'TAR_FILE' : 'scip/scipoptsuite-3.1.1.tgz',
+				'SCIP_DIR' : os.path.join(SCIP_DIR, SCIP_VERSION),
+				#'SCIP_DIR' : '../scip/scipoptsuite-3.1.1/scip-3.1.1', # main SCIP dir
+				'TAR_FILE' : '../scip/scipoptsuite-%s.tgz' % SCIP_VERSION,
 				'UNPACKED' : False,
 				'MADE' : False}
 
 		self.SETTINGS_FILE = SETTINGS_FILE
 		self.CONSTRAINTS_FILE = CONSTRAINTS_FILE
 		self.VERBOSE = VERBOSE
-		self.DATA_DIR = os.path.join(self.GOBN['DIR'], 'data')
+		self.DATA_DIR = os.path.join(GOBN_DIR, 'data')
 
 	###############################
 	##### SETTING UP GOBNILP ######
