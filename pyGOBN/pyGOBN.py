@@ -118,17 +118,21 @@ class GOBN(object):
 		- converting various file formats to GOBNILP's '.dat' format.
 		- linking GOBNILP/SCIP to existing source code or directories.
 
+	SCIP DOWNLOAD SITE
+	------------------
+	- http://scip.zib.de/download.php?fname=scipoptsuite-3.1.1.tgz
+
 
 	"""
 
 
 	def __init__(self,
-			GOBN_DIR='gobnilp/gobnilp1.6.1', 
-			SCIP_DIR='scip/scipoptsuite-3.1.1',
+			GOBN_DIR='gobnilp', 
+			SCIP_DIR='scip',
 			GOBN_VERSION='1.6.1',
 			SCIP_VERSION='3.1.1',
 			SETTINGS_FILE='mysettings.txt', 
-			CONSTRAINTS_FILE='dag.constraints',
+			CONSTRAINTS_FILE='myconstraints.txt',
 			VERBOSE=False):
 		"""
 		NOTE: 
@@ -145,19 +149,19 @@ class GOBN(object):
 			the user has already downloaded/installed/run make on the
 			GOBNILP and/or SCIP source code.
 
-
 		"""
 		self.GOBN = {
-				'DIR': GOBN_DIR, # main GOBNILP directory
+				'DIR': GOBN_DIR # main directory
+				'GOBN_DIR': os.path.join(GOBN_DIR, 'gobnilp%s'%GOBN_VERSION), # main GOBNILP directory
 				'TAR_FILE' : os.path.join(GOBN_DIR,'gobnilp%s.tar.gz' % GOBN_VERSION),
 				'UNPACKED' : False,
 				'MADE' : False}
 
 		self.SCIP = {
-				'DIR' : SCIP_DIR, # main SCIPOPTSUITE directory
-				'SCIP_DIR' : os.path.join(SCIP_DIR, SCIP_VERSION),
-				#'SCIP_DIR' : '../scip/scipoptsuite-3.1.1/scip-3.1.1', # main SCIP dir
-				'TAR_FILE' : os.path.jo'scip/scipoptsuite-%s.tgz' % SCIP_VERSION,
+				'DIR' : SCIP_DIR, # main directory
+				'SCIPOPT_DIR' : os.path.join(SCIP_DIR, 'scipoptsuite-%s'%SCIP_VERSION),
+				'SCIP_DIR' : os.path.join(SCIP_DIR, 'scipoptsuite-%s'%SCIP_VERSION, 'scip-%s'%SCIP_VERSION),
+				'TAR_FILE' : os.path.join(SCIP_DIR, 'scipoptsuite-%s.tgz' % SCIP_VERSION),
 				'UNPACKED' : False,
 				'MADE' : False}
 
