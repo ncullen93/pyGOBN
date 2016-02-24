@@ -5,6 +5,9 @@ This is a project to create a Python wrapper for the GOBNILP solver for exact Ba
 structure learning through Integer Linear Programming. The purpose of the pyGOBN project is to facilitate easy integration 
 of the GOBNILP solver into existing Python libraries focused on Bayesian networks.
 
+It is currently going through some changes as I add support for actually installing pyGOBN into a user's
+local python distribution so that it can be used from any other module or script.
+
 All credit for the real code behind this project goes to Dr. James Cussens and Dr. Mark Bartlett 
 for the creation of GOBNILP, and to the creators of SCIP. Please contact me - Nick Cullen - at
 ncullen.th@dartmouth.edu with any comments or issues.
