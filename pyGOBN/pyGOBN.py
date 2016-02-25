@@ -127,31 +127,49 @@ class GOBN(object):
 
 
 	def __init__(self,
-			GOBN_DIR='gobnilp', 
-			SCIP_DIR='scip',
+			GOBN_DIR, 
+			SCIP_DIR='',
 			GOBN_VERSION='1.6.1',
 			SCIP_VERSION='3.1.1',
 			SETTINGS_FILE='mysettings.txt', 
 			CONSTRAINTS_FILE='myconstraints.txt',
 			VERBOSE=False):
 		"""
-		NOTE: 
-			By not passing any values to the above directory arguments,
-			this is basically assuming that this "pyGOBN.py" file is
-			being run from a main directory, and both the GOBNILP and SCIP
-			main directories are located ONE directory below this file. Also,
-			note that by not passing any directory values, it is assumed that
-			the user holds ONLY the tar.gz files, which must be Unpackedred and
-			then we must try to make them.
+		Arguments
+		---------
+		*GOBN_DIR* : a string (file path)
+			The directory where either a) the gobnilp tar.gz file exists
+			or if you already have gobnilp installed, the directory where
+			the main installed gobnilp directory exists (but not that
+			directory itself)
 
-			If values are passed to the above directory arguments, it can
-			be any valid absolute or relative path, but it is assumed that
-			the user has already downloaded/installed/run make on the
-			GOBNILP and/or SCIP source code.
+		*SCIP_DIR* : a string (file path) (Optional)
+			The directory where either a) the gobnilp tar.gz file exists
+			or if you already have gobnilp installed, the directory where
+			the main installed gobnilp directory exists (but not that
+			directory itself)
+
+			Note that you do not need a SCIP directory ONLY IF you already
+			have already installed/built GOBNILP on your local machine.
+
+		*GOBN_VERSION* : a string (Optional)
+			The version of gobnilp
+
+		*SCIP_VERSION* : a string (Optional)
+			The version of gobnilp
+
+		*SETTINGS_FILE* : a string (file path) (Optional)
+			The file path of the settings file
+
+		*CONSTRAINTS_FILE* : a string (file path) (Optional)
+			The file path of the constraints file
+
+		*VERBOSE* : a boolean
+			Whether to have verbose output or not
 
 		"""
 		self.GOBN = {
-				'DIR': GOBN_DIR # main directory
+				'DIR': GOBN_DIR, # main directory
 				'GOBN_DIR': os.path.join(GOBN_DIR, 'gobnilp%s'%GOBN_VERSION), # main GOBNILP directory
 				'TAR_FILE' : os.path.join(GOBN_DIR,'gobnilp%s.tar.gz' % GOBN_VERSION),
 				'UNPACKED' : False,
@@ -169,6 +187,23 @@ class GOBN(object):
 		self.CONSTRAINTS_FILE = CONSTRAINTS_FILE
 		self.VERBOSE = VERBOSE
 		self.DATA_DIR = os.path.join(GOBN_DIR, 'data')
+
+	def set_SCIP(self, SCIP_DIR):
+		self.SCIP = {
+			'DIR' : SCIP_DIR, # main directory
+			'SCIPOPT_DIR' : os.path.join(SCIP_DIR, 'scipoptsuite-%s'%SCIP_VERSION),
+			'SCIP_DIR' : os.path.join(SCIP_DIR, 'scipoptsuite-%s'%SCIP_VERSION, 'scip-%s'%SCIP_VERSION),
+			'TAR_FILE' : os.path.join(SCIP_DIR, 'scipoptsuite-%s.tgz' % SCIP_VERSION),
+			'UNPACKED' : False,
+			'MADE' : False}
+
+	def set_GOBN(self, GOBN_DIR):
+		self.GOBN = {
+			'DIR': GOBN_DIR, # main directory
+			'GOBN_DIR': os.path.join(GOBN_DIR, 'gobnilp%s'%GOBN_VERSION), # main GOBNILP directory
+			'TAR_FILE' : os.path.join(GOBN_DIR,'gobnilp%s.tar.gz' % GOBN_VERSION),
+			'UNPACKED' : False,
+			'MADE' : False}
 
 	###############################
 	##### SETTING UP GOBNILP ######
@@ -266,12 +301,14 @@ class GOBN(object):
 		*_str* : a string
 			The sting to print to the console while running the function
 		"""
-		dir_proc = ['mkdir', self.GOBN['DIR']]
+		# create the gobnilp directory
+		dir_proc = ['mkdir', self.GOBN['GOBN_DIR']]
 		s,o = self.execute(dir_proc)
 		if not s:
 			print o
 
-		unpack_command = ['tar', '-xzvf', self.GOBN['TAR_FILE'], '-C', self.GOBN['DIR']]
+		# unpack the tar file into the GOBN_DIR directory
+		unpack_command = ['tar', '-xzvf', self.GOBN['TAR_FILE'], '-C', self.GOBN['GOBN_DIR']]
 		successful, output = self.execute(unpack_command,_str=_str)
 		if not successful:
 			print 'Unpack SCIP Failed for the following reason:'
@@ -299,7 +336,8 @@ class GOBN(object):
 		*_str* : a string
 			The sting to print to the console while running the function
 		"""
-		unpack_command = ['tar', '-xzvf', self.SCIP['TAR_FILE'], '-C', 'scip']
+		# unpack the tar file into the SCIP dir
+		unpack_command = ['tar', '-xzvf', self.SCIP['TAR_FILE'], '-C', self.SCIP['DIR']]
 		successful, output = self.execute(unpack_command,_str=_str)
 		if not successful:
 			print 'Unpack SCIP Failed for the following reason:'
@@ -351,9 +389,9 @@ class GOBN(object):
 		
 		### EXECUTE MAKE COMMAND ###
 		if CPLEX:
-			make_command = ['make', 'LPS=cpx', '-C', self.SCIP['DIR']]
+			make_command = ['make', 'LPS=cpx', '-C', self.SCIP['SCIPOPT_DIR']]
 		else:
-			make_command = ['make', '-C', self.SCIP['DIR']]
+			make_command = ['make', '-C', self.SCIP['SCIPOPT_DIR']]
 		successful, output = self.execute(make_command, _str=_str, verbose=verbose)
 		
 		if not successful:
@@ -399,9 +437,8 @@ class GOBN(object):
 		### LINK SCIP TO GOBNILP ###
 
 		_str = 'Linking SCIP to GOBNILP..\n'
-		scip_dir = os.path.join('../../', self.SCIP['SCIP_DIR'])
-		config_command = ['./configure.sh', scip_dir]
-		successful, output = self.execute(config_command, _str=_str, cwd=self.GOBN['DIR'])
+		config_command = ['./configure.sh', self.SCIP['SCIP_DIR']]
+		successful, output = self.execute(config_command, _str=_str, cwd=self.GOBN['GOBN_DIR'])
 		if 'SUCCEEDED' in output:
 			print 'SCIP Linking was successful.'
 			#subprocess.call(['cd' , '../../']) # change back to main dir
@@ -442,11 +479,11 @@ class GOBN(object):
 		---------
 		None
 		"""
-		gobn_proc = ['rm', '-r', self.GOBN['DIR']]
+		gobn_proc = ['rm', '-r', self.GOBN['GOBN_DIR']]
 		s,o = self.execute(gobn_proc)
 		if not s:
 			print o
-		scip_proc = ['rm', '-r', self.SCIP['DIR']]
+		scip_proc = ['rm', '-r', self.SCIP['SCIPOPT_DIR']]
 		s,o = self.execute(scip_proc)
 		if not s:
 			print o
@@ -714,7 +751,9 @@ class GOBN(object):
 		*verbose* : a boolean
 			Whether to have verbose output or not.
 
-		
+		Notes
+		-----
+		- Works, but output file path needs to be setup/fixed.
 		"""
 
 		if isinstance(data, str):
@@ -722,7 +761,9 @@ class GOBN(object):
 		else:
 			DATA_PATH = self.write_data(data, names)
 
-		bin_path = os.path.join(self.GOBN['DIR'], 'bin/gobnilp')
+		# RUN GOBNILP SOLVER
+
+		bin_path = os.path.join(self.GOBN['GOBN_DIR'], 'bin/gobnilp')
 		learn_cmd = [bin_path, ' -g=', self.SETTINGS_FILE, ' -f=dat ', DATA_PATH]
 		_str = 'Running GOBNILP Solver.. This may take a few minutes.'
 		successful, output = self.execute(learn_cmd, _str=_str, verbose=verbose, learn=True)

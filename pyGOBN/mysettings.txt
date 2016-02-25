@@ -5,7 +5,7 @@ gobnilp/mergedelimiters = TRUE
 #gobnilp/edge_penalty = 0
 #gobnilp/nbns = 5
 #
-limits/time = 10
+limits/time = 20
 # limits/gap = 1
 gobnilp/outputfile/solution = "gobnilp/solutions/out.sol"
 gobnilp/outputfile/adjacencymatrix = "gobnilp/solutions/out.mat"
