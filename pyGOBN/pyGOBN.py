@@ -18,6 +18,7 @@ the user of this code has a personal/commercial SCIP license.
 However, because of its licensing terms it must be downloaded from
 the official site - we cannot include it.
 
+
 Acknowledgements from GOBNILP
 -----------------------------
 - GOBNILP version 1.2-1.6 and higher was supported by MRC Project Grant G1002312.
@@ -773,20 +774,6 @@ class GOBN(object):
 		else:
 			print 'Solver run was UNSUCCESSFUL for the following reason: \n'
 			print output
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
